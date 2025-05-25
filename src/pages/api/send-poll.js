@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     const { question, options } = req.body;
 
-    const chatId = "5653494465";
+    const chatId = "-1002399252478"; 
 
     await sendPoll(chatId, question, options);
     res.status(200).send("Poll enviada!");
