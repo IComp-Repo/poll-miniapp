@@ -15,6 +15,13 @@ export default function Home() {
 
   const addOption = () => setOptions([...options, ""]);
 
+  const removeOption = (index) => {
+    if (options.length > 0) {
+      const newOptions = options.filter((_, i) => i !== index);
+      setOptions(newOptions);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Envie a enquete para o chat de teste do bot
@@ -33,8 +40,13 @@ export default function Home() {
           placeholder="Pergunta"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
+          required
         />
-        <button className="btn btn-secondary my-3" type="button" onClick={addOption}>
+        <button
+          className="btn btn-secondary my-3"
+          type="button"
+          onClick={addOption}
+        >
           <strong>+</strong> Opção
         </button>
         <button className="btn btn-info mx-2" type="submit">
@@ -42,7 +54,13 @@ export default function Home() {
         </button>
         <div className="d-flex flex-column p-4 gap-3">
           {options.map((opt, idx) => (
-            <QuizOption handleChange={handleOptionChange} text={opt} id={idx + 1}></QuizOption>
+            <QuizOption
+              key={idx}
+              handleChange={handleOptionChange}
+              handleRemove={removeOption}
+              text={opt}
+              id={idx}
+            />
           ))}
         </div>
       </form>
