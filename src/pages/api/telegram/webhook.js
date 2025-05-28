@@ -3,6 +3,7 @@ import { sendPoll } from "@/lib/telegram";
 export default async function handler(req, res) {
   if (req.method === "POST") {
     const update = req.body;
+    console.log("UPDATE:", JSON.stringify(update, null, 2));
     const message = update.message;
     const text = message?.text;
     const entities = message?.entities;
