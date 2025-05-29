@@ -12,12 +12,12 @@ export default async function handler(req, res) {
     if (text === "/start") {
       console.log("Usuário iniciou o bot com /start:", chatId);
 
-      await sendMessage(chatId, "👋 Bem-vindo! Use o botão abaixo para acessar o Mini App:", {
+      await sendMessage(chatId, "Vamos começar 🖥️ \n Use o botão abaixo para criar uma enquente!", {
         reply_markup: {
           inline_keyboard: [
             [
               {
-                text: "🚀 Abrir Mini App",
+                text: "Criar enquente",
                 web_app: { url: "https://poll-miniapp.vercel.app/" }, 
               },
             ],
