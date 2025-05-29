@@ -9,6 +9,15 @@ export default async function handler(req, res) {
     const entities = message?.entities;
     const chatId = message?.chat?.id;
 
+    if (text === "/start") {
+      console.log("Usuário iniciou o bot com /start:", chatId);
+
+      await sendMessage(chatId, "👋 Olá! Eu sou o bot de enquetes.");
+
+      res.status(200).send("ok");
+      return;
+    }
+
     const isCommand = entities?.some(e => e.type === "bot_command");
 
     if (isCommand && text.startsWith("/enviar_poll")) {
