@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     if (text === "/start") {
       console.log("Usuário iniciou o bot com /start:", chatId);
 
-      await sendMessage(chatId, "Vamos começar 🖥️ \n Use o botão abaixo para criar uma enquente!", {
+      await sendMessage(chatId, "Vamos começar 🖥️\n Use o botão abaixo para criar uma enquente!", {
         reply_markup: {
           inline_keyboard: [
             [
@@ -27,18 +27,6 @@ export default async function handler(req, res) {
 
       res.status(200).send("ok");
       return;
-    }
-
-    const isCommand = entities?.some(e => e.type === "bot_command");
-
-    if (isCommand && text.startsWith("/enviar_poll")) {
-      console.log("Comando /enviar_poll detectado:", chatId);
-
-      const question = "Tô testando galera";
-      const options = ["👍 Bom", "👎 Ruim"];
-      await sendPoll(chatId, question, options);
-
-      console.log("Poll enviada para:", chatId);
     }
 
     res.status(200).send("ok");
