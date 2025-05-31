@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     if (text === "/start") {
       console.log("Usuário iniciou o bot com /start:", chatId);
 
-      await sendMessage(chatId, "Vamos começar 🖥️\n Use o botão abaixo para criar uma enquente!", {
+      await sendMessage(chatId, "Vamos começar 🖥️\nUse o botão abaixo para criar uma enquente!", {
         reply_markup: {
           inline_keyboard: [
             [
