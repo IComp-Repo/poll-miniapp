@@ -67,3 +67,34 @@
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     font-weight: extra-bold;
 }
+
+.label {
+    margin-bottom: 5px;
+    padding: 5px;
+
+}
+
+.inputSelect {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    padding-left: 20px;
+    font-size: 16px;
+    color: #000000;
+    border-radius: 20px;
+    background-color: #EEECEC;
+    padding-right: 2.5rem;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('../assets/angle-small-down.png');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem auto;
+}
+
+.inputSelect::placeholder {
+    color: #343A40;
+    font-size: 16px;
+    padding: 10px;
+}
