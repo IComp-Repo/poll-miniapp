@@ -14,6 +14,7 @@ export default function Home() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const [selectedGroup, setSelectedGroup] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
@@ -30,8 +31,27 @@ export default function Home() {
     }
   };
 
+  const resetForm = () => {
+    setQuestion("");
+    setOptions(["", ""]);
+    setSelectedGroup("");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (options.length < 2) {
+      toast.warn("Adicione pelo menos duas opções.");
+      return;
+    }
+
+    if (options.some(opt => opt.trim() === "")) {
+      toast.warn("Todas as opções devem estar preenchidas.");
+      return;
+    }
+
+    setLoading(true);
+
     try {
       await axios.post("/api/send-poll", {
         question,
@@ -39,8 +59,11 @@ export default function Home() {
         chatId: selectedGroup,
       });
       toast.success("Poll enviada com sucesso!");
+      resetForm();
     } catch (error) {
       toast.error("Erro ao enviar a Poll. Tente novamente!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -108,9 +131,10 @@ export default function Home() {
               <Image src={iconPlus} alt="plus"></Image>
               Opção
             </button>
-            <button className={styles.submitPoll} type="submit" >
-              Enviar
+            <button className={styles.submitPoll} type="submit" disabled={loading}>
+              {loading ? "Enviando..." : "Enviar"}
             </button>
+
           </div>
         </form >
 

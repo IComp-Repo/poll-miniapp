@@ -15,14 +15,13 @@ function QuizOption({ handleChange, handleRemove, text, id }) {
         type="text"
         placeholder="Texto da opção"
         value={text}
-        onChange={(e) => handleChange(e.target.value, id)}
-        required
+        onChange={(e) => handleChange(id, e.target.value)} // <- CORRIGIDO
       />
-      <Image 
+      <Image
         src={Xmark}
         width={28}
         height={28}
-        style={{ cursor: 'pointer', marginLeft: '15px' , color: '#D95858'}}
+        style={{ cursor: 'pointer', marginLeft: '15px', color: '#D95858' }}
         alt="Remover opção"
         onClick={() => handleRemove(id)}
         type="button"
