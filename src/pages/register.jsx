@@ -1,10 +1,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import Image from 'next/image';
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
-import logo from '../assets/logo.png'; // Adjust the path as necessary
+import Header from "../components/Header";
 import styles from "../styles/useGlobal.module.css"; // Adjust the path as necessary
 
 export default function Register() {
@@ -30,11 +29,7 @@ export default function Register() {
 
   return (
     <>
-      <header className={styles.waveHeader}>
-        <Image src={logo} alt="Logo" width={130} height={130} />
-        <h1 className={styles.title}>Knowledge Check Bot</h1>
-        <div className="wave-shape"></div>
-      </header>
+      <Header title={'Knowledge Check Bot'} />
 
       <div className="container py-5 d-flex flex-column align-items-center" color="#F8F9FA">
 
@@ -151,7 +146,7 @@ export default function Register() {
         <ToastContainer position="top-right" autoClose={3000} />
         <p className="mt-3">
           Já tem conta?{" "}
-          <Link href="/register"
+          <Link href="/login"
             className={styles.registerButton}>
             Fazer login
           </Link>

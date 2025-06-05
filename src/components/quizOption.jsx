@@ -1,21 +1,32 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import Image from "next/image";
+import Xmark from '../assets/circulo-xmark.png';
+import styles from "../styles/useGlobal.module.css";
 
 function QuizOption({ handleChange, handleRemove, text, id }) {
   return (
-    <div className="d-flex align-content-center w-50">
+    <div className="d-flex align-items-center w-50" style={{ marginBottom: '10px' }}>
+      <label htmlFor={`quiz-option-${id}`} className="visually-hidden">
+        Matrícula UFAM
+      </label>
       <input
+        id={`quiz-option-${id}`}
+        className={styles.input}
         type="text"
-        className="form-control w-100"
-        placeholder={`Texto da opção`}
-        id={id}
+        placeholder="Texto da opção"
         value={text}
-        onChange={(e) => handleChange(id, e.target.value)}
+        onChange={(e) => handleChange(e.target.value, id)}
         required
       />
-      <button
-        className="btn btn-close bg-danger rounded-1 my-auto mx-2 p-2"
+      <Image 
+        src={Xmark}
+        width={28}
+        height={28}
+        style={{ cursor: 'pointer', marginLeft: '15px' , color: '#D95858'}}
+        alt="Remover opção"
         onClick={() => handleRemove(id)}
         type="button"
+        aria-label="Remover opção"
       />
     </div>
   );
