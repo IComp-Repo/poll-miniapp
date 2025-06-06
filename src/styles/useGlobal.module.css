@@ -12,13 +12,11 @@
     content: "";
     position: absolute;
     bottom: -10px;
-    /* projeta 20px para baixo do header */
     left: 0;
     width: 100%;
     height: 30px;
     background-color: #B34F05;
     z-index: -1;
-    /* fica atrás do header */
 }
 
 .input {
@@ -26,6 +24,7 @@
     padding: 10px;
     border: none;
     padding-left: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     font-size: 16px;
     color: #343A40;
     border-radius: 20px;
@@ -42,12 +41,52 @@
     width: 100%;
     padding: 10px;
     border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     color: white;
     font-size: 16px;
     font-family: 'Roboto', sans-serif;
     font-weight: 600;
     border-radius: 10px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
     background-color: #01325B;
+    cursor: pointer;
+}
+
+.submitPoll {
+    width: 255px;
+    height: 38px;
+    padding: 10px;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    border-radius: 10px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    background-color: #01325B;
+    cursor: pointer;
+}
+
+.opcao {
+    width: 255px;
+    height: 38px;
+    padding: 10px;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    color: white;
+    justify-content: center;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    border-radius: 10px;
+    align-items: center;
+    display: flex;
+    background-color: #3F998A;
     cursor: pointer;
 }
 
@@ -79,6 +118,7 @@
     padding: 10px;
     border: none;
     padding-left: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     font-size: 16px;
     color: #000000;
     border-radius: 20px;
