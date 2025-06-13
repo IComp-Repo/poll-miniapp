@@ -1,30 +1,67 @@
+import { useAuth } from "@/shared/context/AuthContext";
+import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { useForm } from "react-hook-form";
+import { ToastContainer, toast } from "react-toastify";
+import { z } from "zod";
 import Header from "../components/Header";
-import styles from "../styles/useGlobal.module.css"; // Adjust the path as necessary
+import api from "../config/axios";
+import styles from "../styles/useGlobal.module.css";
+
+const loginSchema = z.object({
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
+  matricula: z.string().min(1, "Matrícula é obrigatória"),
+  isProfessor: z.enum(["Sim", "Não"], {
+    errorMap: () => ({ message: "Selecione se é professor ou não" }),
+  }),
+});
+
+type FormDataRegister = z.infer<typeof loginSchema>;
+var BASE_URL = process.env.VITE_API_BASE_URL || 'https://bot-telegram-test-server1.onrender.com';
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [register, setRegister] = useState("");
-  const [isProfessor, setIsProfessor] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const auth = useAuth();
 
-  const handleRegister = (e) => {
-    e.preventDefault();
 
-    if (isProfessor !== "Sim") {
-      setError("Desculpe, apenas professores podem se cadastrar.");
-      return;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataRegister>({
+    resolver: zodResolver(loginSchema),
+    mode: "onTouched",
+  });
+
+  const onSubmit = async (data: FormDataRegister) => {
+    try {
+      setLoading(true);
+      const response = await api.post(`${BASE_URL}/api/register`, data);
+
+      const token = response.data.access_token;
+      if (token) {
+        auth.login(token);
+        toast.success("Cadastro realizado com sucesso!");
+        router.push("/home");
+      } else {
+        toast.error("Token não encontrado na resposta.");
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error("Erro ao Caastrar-se: " + error.message);
+      } else {
+        toast.error("Erro desconhecido durante o cadastro.");
+      }
+    } finally {
+      setLoading(false);
     }
-
-    console.log("Usuário cadastrado:", { email, password, register });
-    router.push("/login");
   };
 
   return (
@@ -34,29 +71,33 @@ export default function Register() {
       <div className="container py-5 d-flex flex-column align-items-center" color="#F8F9FA">
 
         <form
-          onSubmit={handleRegister}
+          onSubmit={handleSubmit(onSubmit)}
           className="w-100"
           style={{ maxWidth: "400px" }}
         >
           <div className="mb-3">
             <input
-              className={styles.input}
               type="email"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              className={styles.input}
+              {...register("email")}
             />
+
+            {errors.email && (
+              <p className="text-danger mt-1">{errors.email.message}</p>
+            )}
           </div>
           <div className="mb-3" style={{ position: "relative", width: "100%" }}>
+
             <input
-              className={styles.input}
               type={showPassword ? "text" : "password"}
               placeholder="Senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              className={styles.input}
+              {...register("password")}
             />
+            {errors.password && (
+              <p className="text-danger mt-1">{errors.password.message}</p>
+            )}
 
             <button
               onClick={() => setShowPassword(!showPassword)}
@@ -109,16 +150,16 @@ export default function Register() {
             </button>
             <div className="mb-3 mt-3">
               <input
-                className={styles.input}
                 type="text"
                 placeholder="Sua Matricula UFAM"
-                value={register}
+                className={styles.input}
+                {...register("matricula")}
                 onChange={(e) => {
                   const onlyNums = e.target.value.replace(/\D/g, "");
-                  setRegister(onlyNums);
+                  e.target.value = onlyNums;
                 }}
-                required
               />
+
             </div>
             <div className="mb-3 mt-3">
               <label htmlFor="isProfessor" className={styles.label}>
@@ -127,20 +168,35 @@ export default function Register() {
               <select
                 id="isProfessor"
                 className={styles.inputSelect}
-                value={isProfessor}
-                onChange={(e) => setIsProfessor(e.target.value)}
-                required
+                {...register("isProfessor")}
               >
                 <option value="">Selecione</option>
                 <option value="Sim">Sim</option>
                 <option value="Não">Não</option>
               </select>
+              {errors.isProfessor && (
+                <p className="text-danger mt-1">{errors.isProfessor.message}</p>
+              )}
             </div>
           </div>
 
-          <button className={styles.submit} type="submit">
-            Cadastrar-se
+          <button className={styles.submit} type="submit" disabled={loading}>
+            {loading ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Carregando...
+              </>
+            ) : (
+              "Cadastrar-se"
+            )}
           </button>
+          {errors.root && (
+            <p className="text-danger mt-1">{errors.root.message}</p>
+          )}
         </form>
 
         <ToastContainer position="top-right" autoClose={3000} />

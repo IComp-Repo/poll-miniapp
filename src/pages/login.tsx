@@ -10,9 +10,10 @@ import { ToastContainer, toast } from "react-toastify";
 import { z } from "zod";
 import Header from "../components/Header";
 import api from "../config/axios";
-import { API_ROUTES } from "../config/routes";
 import { useAuth } from "../shared/context/AuthContext";
 import styles from "../styles/useGlobal.module.css";
+
+var BASE_URL = process.env.VITE_API_BASE_URL || 'https://bot-telegram-test-server1.onrender.com';
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -39,7 +40,7 @@ export default function Login() {
   const onSubmit = async (data: LoginFormData) => {
     try {
       setLoading(true);
-      const response = await api.post(API_ROUTES.AUTH.LOGIN, data);
+      const response = await api.post(`${BASE_URL}/api/login`, data);
 
       const token = response.data.access_token;
       if (token) {
