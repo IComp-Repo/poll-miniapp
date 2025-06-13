@@ -1,3 +1,4 @@
+import { API_ROUTES, APP_ROUTES } from "@/config/routes";
 import { useAuth } from "@/shared/context/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -21,15 +22,12 @@ const loginSchema = z.object({
 });
 
 type FormDataRegister = z.infer<typeof loginSchema>;
-var BASE_URL = process.env.VITE_API_BASE_URL || 'https://bot-telegram-test-server1.onrender.com';
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const auth = useAuth();
-
-
 
   const {
     register,
@@ -43,13 +41,13 @@ export default function Register() {
   const onSubmit = async (data: FormDataRegister) => {
     try {
       setLoading(true);
-      const response = await api.post(`${BASE_URL}/api/register/`, data);
+      const response = await api.post(API_ROUTES.AUTH.REGISTER, data);
 
       const token = response.data.access_token;
       if (token) {
         auth.login(token);
         toast.success("Cadastro realizado com sucesso!");
-        router.push("/home");
+        router.push(APP_ROUTES.LOGIN);
       } else {
         toast.error("Token não encontrado na resposta.");
       }

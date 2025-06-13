@@ -1,4 +1,4 @@
-import { sendPoll, sendMessage } from "@/lib/telegram";
+import { sendMessage } from "@/lib/telegram";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {

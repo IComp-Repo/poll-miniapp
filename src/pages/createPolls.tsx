@@ -1,3 +1,4 @@
+import { API_ROUTES } from "@/config/routes";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
@@ -10,13 +11,13 @@ import QuizOption from "../components/quizOption";
 import grupos from "../params/grupos.json"; // Assuming you have a JSON file with group data
 import styles from "../styles/useGlobal.module.css";
 
-export default function Home() {
+export default function createPolls() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const [selectedGroup, setSelectedGroup] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleOptionChange = (index, value) => {
+  const handleOptionChange = (index: any, value: any) => {
     const newOptions = [...options];
     newOptions[index] = value;
     setOptions(newOptions);
@@ -24,7 +25,7 @@ export default function Home() {
 
   const addOption = () => setOptions([...options, ""]);
 
-  const removeOption = (index) => {
+  const removeOption = (index: any) => {
     if (options.length > 2) {
       const newOptions = options.filter((_, i) => i !== index);
       setOptions(newOptions);
@@ -37,7 +38,7 @@ export default function Home() {
     setSelectedGroup("");
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (options.length < 2) {
@@ -53,7 +54,7 @@ export default function Home() {
     setLoading(true);
 
     try {
-      await axios.post("/api/send-poll", {
+      await axios.post(API_ROUTES.POLLS.CREATE, {
         question,
         options,
         chatId: selectedGroup,

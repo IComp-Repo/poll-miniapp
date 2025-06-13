@@ -15,7 +15,7 @@ function QuizOption({ handleChange, handleRemove, text, id }) {
         type="text"
         placeholder="Texto da opção"
         value={text}
-        onChange={(e) => handleChange(id, e.target.value)} // <- CORRIGIDO
+        onChange={(e) => handleChange(id, e.target.value)}
       />
       <Image
         src={Xmark}

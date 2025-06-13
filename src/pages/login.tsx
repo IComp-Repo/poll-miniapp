@@ -1,5 +1,6 @@
 // pages/login.tsx
 
+import { API_ROUTES, APP_ROUTES } from "@/config/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Link from "next/link";
@@ -12,8 +13,6 @@ import Header from "../components/Header";
 import api from "../config/axios";
 import { useAuth } from "../shared/context/AuthContext";
 import styles from "../styles/useGlobal.module.css";
-
-var BASE_URL = process.env.VITE_API_BASE_URL || 'https://bot-telegram-test-server1.onrender.com';
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -40,13 +39,13 @@ export default function Login() {
   const onSubmit = async (data: LoginFormData) => {
     try {
       setLoading(true);
-      const response = await api.post(`${BASE_URL}/api/login`, data);
+      const response = await api.post(API_ROUTES.AUTH.LOGIN, data);
 
       const token = response.data.access_token;
       if (token) {
         auth.login(token);
         toast.success("Login realizado com sucesso!");
-        router.push("/home");
+        router.push(APP_ROUTES.CREATE_POLLS);
       } else {
         toast.error("Token não encontrado na resposta.");
       }
