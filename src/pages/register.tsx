@@ -43,7 +43,7 @@ export default function Register() {
   const onSubmit = async (data: FormDataRegister) => {
     try {
       setLoading(true);
-      const response = await api.post(`${BASE_URL}/api/register`, data);
+      const response = await api.post(`${BASE_URL}/api/register/`, data);
 
       const token = response.data.access_token;
       if (token) {
@@ -55,7 +55,7 @@ export default function Register() {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error("Erro ao Caastrar-se: " + error.message);
+        toast.error("Erro ao Cadastrar-se: " + error.message);
       } else {
         toast.error("Erro desconhecido durante o cadastro.");
       }
