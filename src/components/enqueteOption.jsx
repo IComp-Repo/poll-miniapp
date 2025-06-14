@@ -1,29 +1,14 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
 import Xmark from '../assets/circulo-xmark.png';
 import styles from "../styles/useGlobal.module.css";
 
-
-function QuizOption({ handleChange, handleRemove, text, id, correctOption, setCorrectOption }) {
+function EnqueteOption({ handleChange, handleRemove, text, id }) {
   return (
     <div className="d-flex align-items-center w-50" style={{ marginBottom: '10px' }}>
-      <OverlayTrigger
-        placement="left"
-        overlay={<Tooltip id={`tooltip-radio-${id}`}>Marcar como resposta correta</Tooltip>}
-      >
-        <label className={`${styles.customRadio}`}>
-          <input
-            type="radio"
-            name="correctAnswer"
-            checked={correctOption === id}
-            onChange={() => setCorrectOption(id)}
-          />
-          <span className={styles.radioMark}></span>
-        </label>
-      </OverlayTrigger>
-
+      <label htmlFor={`quiz-option-${id}`} className="visually-hidden">
+        Matrícula UFAM
+      </label>
       <input
         id={`quiz-option-${id}`}
         className={styles.input}
@@ -32,7 +17,6 @@ function QuizOption({ handleChange, handleRemove, text, id, correctOption, setCo
         value={text}
         onChange={(e) => handleChange(id, e.target.value)}
       />
-
       <Image
         src={Xmark}
         width={28}
@@ -44,8 +28,7 @@ function QuizOption({ handleChange, handleRemove, text, id, correctOption, setCo
         aria-label="Remover opção"
       />
     </div>
-
   );
 }
 
-export default QuizOption;
+export default EnqueteOption;

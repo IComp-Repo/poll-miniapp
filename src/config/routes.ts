@@ -4,7 +4,8 @@ export const API_ROUTES = {
     REGISTER: '/api/register/',
   },
   POLLS: {
-    CREATE: `/api/send-poll/`,
+    CREATE: '/api/send-poll/',
+    QUIZZ: '/api/send-quiz/'
   },
 };
 
@@ -13,5 +14,6 @@ export const APP_ROUTES = {
   CREATE_POLLS: '/createPolls',
   LOGIN: '/login',
   REGISTER: '/register',
+  MENU: '/menu'
 };
 

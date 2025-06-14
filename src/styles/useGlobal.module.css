@@ -3,7 +3,7 @@
 .waveHeader {
     background-color: #e05800;
     color: white;
-    padding: 60px 50px;
+    padding: 50px 50px;
     text-align: center;
     position: relative;
 }
@@ -17,6 +17,27 @@
     height: 30px;
     background-color: #B34F05;
     z-index: -1;
+}
+
+.logoutButton {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background-color: #ffffff;
+  color: #e05800;
+  border: 2px solid #e05800;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.logoutButton:hover {
+  background-color: #793407;
+  color: #fff;
 }
 
 .input {
@@ -137,4 +158,82 @@
     color: #343A40;
     font-size: 16px;
     padding: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.2s ease;
+}
+
+.cardHover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cardHover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.cardText {
+    color: #555;
+}
+
+.div_card {
+    background-color: #000000;
+}
+
+.customRadio {
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.customRadio input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radioMark {
+  position: absolute;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background-color: #eee;
+  border-radius: 50%;
+  border: 2px solid #aaa;
+  transition: all 0.2s ease-in-out;
+}
+
+.customRadio input:checked ~ .radioMark {
+  background-color: #3F998A;
+  border-color: #3F998A;
+}
+
+.radioMark::after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.customRadio input:checked ~ .radioMark::after {
+  display: block;
+}
+
+.customRadio .radioMark::after {
+  top: 4px;
+  left: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+  position: absolute;
 }
