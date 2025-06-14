@@ -9,12 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.1.1",
     "axios": "^1.9.0",
     "bootstrap": "^5.3.6",
+    "jwt-decode": "^4.0.0",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-toastify": "^11.0.5"
+    "react-hook-form": "^7.57.0",
+    "react-toastify": "^11.0.5",
+    "zod": "^3.25.62"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import logo from '../assets/logo.png'; // Ajuste o caminho se necessário
-import styles from "../styles/useGlobal.module.css"; // Ajuste o caminho se necessário
+import logo from '../assets/logo.png';
+import styles from "../styles/useGlobal.module.css";
 
 export default function Header({title}) {
 
