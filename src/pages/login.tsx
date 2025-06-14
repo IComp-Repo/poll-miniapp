@@ -43,7 +43,7 @@ export default function Login() {
       if (token) {
         auth.login(token);
         toast.success("Login realizado com sucesso!");
-        router.push(APP_ROUTES.CREATE_POLLS);
+        router.push(APP_ROUTES.MENU);
       } else {
         toast.error("Token não encontrado na resposta.");
       }

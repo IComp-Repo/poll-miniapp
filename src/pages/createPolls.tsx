@@ -1,3 +1,4 @@
+import { Logout } from "@/components/Logout";
 import api from "@/config/axios";
 import { API_ROUTES } from "@/config/routes";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -7,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import iconPlus from "../assets/icon.png";
 import Header from "../components/Header";
-import QuizOption from "../components/quizOption";
+import EnqueteOption from "../components/enqueteOption";
 import grupos from "../params/grupos.json";
 import styles from "../styles/useGlobal.module.css";
 
@@ -60,7 +61,7 @@ export default function createPolls() {
         chatId: selectedGroup,
       }, {
         headers: {
-         Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       toast.success("Poll enviada com sucesso!");
@@ -74,7 +75,8 @@ export default function createPolls() {
 
   return (
     <>
-      <Header title={'Create Polls'} />
+      <Header title={'Criar Enquetes'} />
+      <Logout/>
       <div className="container py-5 d-flex justify-content-center align-items-center flex-column">
 
         <form
@@ -102,7 +104,7 @@ export default function createPolls() {
             </select>
           </div>
 
-         
+
           <div className="mb-4 mt-3">
             <label htmlFor="isProfessor" className={styles.label}>
               Qual é a sua pergunta?
@@ -121,7 +123,7 @@ export default function createPolls() {
 
           <div className="d-flex flex-column gap-2">
             {options.map((opt, idx) => (
-              <QuizOption
+              <EnqueteOption
                 key={idx}
                 handleChange={handleOptionChange}
                 handleRemove={removeOption}
