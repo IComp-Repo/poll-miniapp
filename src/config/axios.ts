@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://bot-telegram-test-server1.onrender.com', // API base URL
-  timeout: 10000, // Request timeout
+  baseURL: 'https://bot-telegram-test-server1.onrender.com', 
+  timeout: 10000, 
 });
-// Request interceptor
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");

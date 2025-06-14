@@ -1,5 +1,3 @@
-// pages/login.tsx
-
 import { API_ROUTES, APP_ROUTES } from "@/config/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";

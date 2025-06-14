@@ -102,7 +102,7 @@ export default function createPolls() {
             </select>
           </div>
 
-          {/* Input da pergunta */}
+         
           <div className="mb-4 mt-3">
             <label htmlFor="isProfessor" className={styles.label}>
               Qual é a sua pergunta?

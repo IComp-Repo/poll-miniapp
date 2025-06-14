@@ -1,4 +1,3 @@
-// Defina a base da sua API (mude se for produção/dev)
 export const API_ROUTES = {
   AUTH: {
     LOGIN: '/api/login/',
