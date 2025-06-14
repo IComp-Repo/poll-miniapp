@@ -10,7 +10,7 @@ function QuizOption({ handleChange, handleRemove, text, id, correctOption, setCo
   return (
     <div className="d-flex align-items-center w-50" style={{ marginBottom: '10px' }}>
       <OverlayTrigger
-        placement="left"
+        placement="auto"
         overlay={<Tooltip id={`tooltip-radio-${id}`}>Marcar como resposta correta</Tooltip>}
       >
         <label className={`${styles.customRadio}`}>

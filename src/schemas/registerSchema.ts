@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Primeiro definimos o schema base
 export const baseRegisterSchema = z.object({
     email: z.string().email({ message: "Email inválido" }),
     password: z.string().min(8, { message: "A senha deve ter pelo menos 8 caracteres" }),
@@ -11,5 +10,4 @@ export const baseRegisterSchema = z.object({
     }),
 });
 
-// Tipos
 export type RegisterSchemaInput = z.input<typeof baseRegisterSchema>; 
