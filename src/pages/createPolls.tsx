@@ -1,5 +1,5 @@
+import api from "@/config/axios";
 import { API_ROUTES } from "@/config/routes";
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import { useState } from "react";
@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import iconPlus from "../assets/icon.png";
 import Header from "../components/Header";
 import QuizOption from "../components/quizOption";
-import grupos from "../params/grupos.json"; // Assuming you have a JSON file with group data
+import grupos from "../params/grupos.json";
 import styles from "../styles/useGlobal.module.css";
 
 export default function createPolls() {
@@ -54,10 +54,14 @@ export default function createPolls() {
     setLoading(true);
 
     try {
-      await axios.post(API_ROUTES.POLLS.CREATE, {
+      await api.post(API_ROUTES.POLLS.CREATE, {
         question,
         options,
         chatId: selectedGroup,
+      }, {
+        headers: {
+         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       toast.success("Poll enviada com sucesso!");
       resetForm();

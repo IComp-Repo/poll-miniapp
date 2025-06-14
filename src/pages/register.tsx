@@ -1,4 +1,5 @@
 import { API_ROUTES, APP_ROUTES } from "@/config/routes";
+import { baseRegisterSchema, RegisterSchemaInput } from "@/schemas/registerSchema";
 import { useAuth } from "@/shared/context/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -6,22 +7,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
-import { z } from "zod";
+import { toast, ToastContainer } from "react-toastify";
 import Header from "../components/Header";
 import api from "../config/axios";
 import styles from "../styles/useGlobal.module.css";
-
-const loginSchema = z.object({
-  email: z.string().email("Email inválido"),
-  password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
-  matricula: z.string().min(1, "Matrícula é obrigatória"),
-  isProfessor: z.enum(["Sim", "Não"], {
-    errorMap: () => ({ message: "Selecione se é professor ou não" }),
-  }),
-});
-
-type FormDataRegister = z.infer<typeof loginSchema>;
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,15 +22,20 @@ export default function Register() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormDataRegister>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterSchemaInput>({
+    resolver: zodResolver(baseRegisterSchema),
     mode: "onTouched",
   });
 
-  const onSubmit = async (data: FormDataRegister) => {
+
+  const onSubmit = async (data: RegisterSchemaInput) => {
+    const formattedData = {
+      ...data,
+      is_professor: String(data.is_professor) === "true" ? true : false,
+    };
     try {
       setLoading(true);
-      const response = await api.post(API_ROUTES.AUTH.REGISTER, data);
+      const response = await api.post(API_ROUTES.AUTH.REGISTER, formattedData);
 
       const token = response.data.access_token;
       if (token) {
@@ -52,11 +46,8 @@ export default function Register() {
         toast.error("Token não encontrado na resposta.");
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error("Erro ao Cadastrar-se: " + error.message);
-      } else {
-        toast.error("Erro desconhecido durante o cadastro.");
-      }
+      toast.error("Erro ao Cadastrar-se: " + error.message);
+      console.log(error.message);
     } finally {
       setLoading(false);
     }
@@ -151,7 +142,7 @@ export default function Register() {
                 type="text"
                 placeholder="Sua Matricula UFAM"
                 className={styles.input}
-                {...register("matricula")}
+                {...register("register")}
                 onChange={(e) => {
                   const onlyNums = e.target.value.replace(/\D/g, "");
                   e.target.value = onlyNums;
@@ -166,14 +157,14 @@ export default function Register() {
               <select
                 id="isProfessor"
                 className={styles.inputSelect}
-                {...register("isProfessor")}
+                {...register("is_professor")}
               >
                 <option value="">Selecione</option>
-                <option value="Sim">Sim</option>
-                <option value="Não">Não</option>
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
               </select>
-              {errors.isProfessor && (
-                <p className="text-danger mt-1">{errors.isProfessor.message}</p>
+              {errors.is_professor && (
+                <p className="text-danger mt-1">{errors.is_professor.message}</p>
               )}
             </div>
           </div>
@@ -197,7 +188,7 @@ export default function Register() {
           )}
         </form>
 
-        <ToastContainer position="top-right" autoClose={3000} />
+        <ToastContainer position="top-right" theme="colored" autoClose={3000} />
         <p className="mt-3">
           Já tem conta?{" "}
           <Link href="/login"

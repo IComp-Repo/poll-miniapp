@@ -16,7 +16,7 @@ import styles from "../styles/useGlobal.module.css";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
-  password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
+  password: z.string().min(8, "Senha deve ter no mínimo 8 caracteres"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -50,11 +50,8 @@ export default function Login() {
         toast.error("Token não encontrado na resposta.");
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error("Erro no login: " + error.message);
-      } else {
-        toast.error("Erro desconhecido durante o login.");
-      }
+      toast.error("Erro ao Cadastrar-se: " + error.message);
+      console.log(error.message);
     } finally {
       setLoading(false);
     }
@@ -132,7 +129,7 @@ export default function Login() {
           </button>
         </form>
 
-        <ToastContainer position="top-right" autoClose={3000} />
+        <ToastContainer position="top-right" theme="colored" autoClose={3000} />
         <p className="mt-3">
           Ainda não tem conta?{" "}
           <Link href="/register" className={styles.registerButton}>

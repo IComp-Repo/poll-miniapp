@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://bot-telegram-test-server1.onrender.com', // API base URL
+  baseURL: 'https://4ad7-179-34-231-208.ngrok-free.app', // API base URL
   timeout: 10000, // Request timeout
 });
 // Request interceptor
