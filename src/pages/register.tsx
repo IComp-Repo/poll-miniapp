@@ -46,8 +46,12 @@ export default function Register() {
         toast.error("Token não encontrado na resposta.");
       }
     } catch (error: unknown) {
-      toast.error("Erro ao Cadastrar-se: " + error.message);
-      console.log(error.message);
+      const errorMessage =
+        typeof error === "object" && error !== null && "message" in error
+          ? (error as { message: string }).message
+          : String(error);
+      toast.error("Erro ao Cadastrar-se: " + errorMessage);
+      console.log(errorMessage);
     } finally {
       setLoading(false);
     }
