@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import iconPlus from "../assets/icon.png";
 import Header from "../components/Header";
+import Navbar from "../components/navBack";
 import QuizOption from "../components/quizOption";
 import grupos from "../params/grupos.json";
 import styles from "../styles/useGlobal.module.css";
@@ -84,6 +85,7 @@ export default function createQuizz() {
     return (
         <>
             <Header title={'Criar Quizz'} />
+            <Navbar/>
             <Logout/>
             <div className="container py-5 d-flex justify-content-center align-items-center flex-column">
 

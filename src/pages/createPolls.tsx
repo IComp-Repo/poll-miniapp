@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import iconPlus from "../assets/icon.png";
 import Header from "../components/Header";
 import EnqueteOption from "../components/enqueteOption";
+import Navbar from "../components/navBack";
 import grupos from "../params/grupos.json";
 import styles from "../styles/useGlobal.module.css";
 
@@ -76,6 +77,7 @@ export default function createPolls() {
   return (
     <>
       <Header title={'Criar Enquetes'} />
+      <Navbar/>
       <Logout/>
       <div className="container py-5 d-flex justify-content-center align-items-center flex-column">
 

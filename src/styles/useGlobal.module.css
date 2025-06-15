@@ -237,3 +237,19 @@
   background: white;
   position: absolute;
 }
+
+.backButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.2s;
+}
+
+.backButton:hover {
+  transform: scale(1.1);
+}
