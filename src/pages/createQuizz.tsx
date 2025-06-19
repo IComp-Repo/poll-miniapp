@@ -19,9 +19,11 @@ export default function createQuizz() {
     const [selectedGroup, setSelectedGroup] = useState("");
     const [correctOption, setCorrectOption] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
+    const [quizData, setQuizData] = useState<any[]>([]);
+    const [fileName, setFileName] = useState<string | null>(null);
 
 
-    const handleOptionChange = (index: any, value: any) => {
+    const handleOptionChange = (index: number, value: string) => {
         const newOptions = [...options];
         newOptions[index] = value;
         setOptions(newOptions);
@@ -35,69 +37,48 @@ export default function createQuizz() {
         e.preventDefault();
         const file = e.dataTransfer.files[0];
 
-        if (!file || !file.name.endsWith(".md")) {
-            toast.warn("Apenas arquivos .md são permitidos.");
+        if (!file || !file.name.toLowerCase().endsWith(".json")) {
+            toast.warn("Apenas arquivos .json são permitidos.");
             return;
         }
 
+        setFileName(file.name);
+
         const reader = new FileReader();
-        reader.onload = async (event) => {
-            const content = event.target?.result as string;
-            const parsed = parseMarkdown(content);
+        reader.onload = (event) => {
+            try {
+                const content = event.target?.result as string;
+                const parsed = JSON.parse(content);
 
-            if (!parsed) {
-                toast.error("Erro ao interpretar o arquivo Markdown.");
-                return;
+                if (!parsed.chatId || !parsed.questions || !Array.isArray(parsed.questions)) {
+                    toast.error("Arquivo JSON inválido: falta 'chatId' ou 'questions'.");
+                    return;
+                }
+
+                setSelectedGroup(parsed.chatId);
+                setQuizData(parsed.questions);
+
+                const first = parsed.questions[0];
+                if (first) {
+                    setQuestion(first.question);
+                    setOptions(first.options);
+                    setCorrectOption(first.correctOption);
+                }
+
+                toast.success("Perguntas carregadas! Revise e clique em Enviar.");
+            } catch {
+                toast.error("Erro ao ler o arquivo JSON.");
             }
-
-            const { question, options, correctOption } = parsed;
-
-            setQuestion(question);
-            setOptions(options);
-            setCorrectOption(correctOption);
-            toast.success("Pergunta carregada com sucesso! Revise e clique em Enviar.");
         };
+
         reader.readAsText(file);
     };
-
-
-    const parseMarkdown = (markdown: string): {
-        question: string;
-        options: string[];
-        correctOption: number;
-    } | null => {
-        const lines = markdown.trim().split("\n");
-
-        const questionLine = lines.find(line => line.startsWith("#"));
-        if (!questionLine) return null;
-
-        const question = questionLine.replace(/^#\s*/, "").trim();
-        const options: string[] = [];
-        let correctOption = -1;
-
-        lines.forEach((line, index) => {
-            const trimmed = line.trim();
-            if (trimmed.startsWith("- [x]")) {
-                options.push(trimmed.replace("- [x]", "").trim());
-                correctOption = options.length - 1;
-            } else if (trimmed.startsWith("-")) {
-                options.push(trimmed.replace("-", "").trim());
-            }
-        });
-
-        if (question === "" || options.length < 2 || correctOption === -1) {
-            return null;
-        }
-
-        return { question, options, correctOption };
-    };
-
 
 
 
     const addOption = () => setOptions([...options, ""]);
 
-    const removeOption = (index: any) => {
+    const removeOption = (index: number) => {
         if (options.length > 2) {
             const newOptions = options.filter((_, i) => i !== index);
             setOptions(newOptions);
@@ -108,80 +89,107 @@ export default function createQuizz() {
         setQuestion("");
         setOptions(["", ""]);
         setSelectedGroup("");
+        setQuizData([]);
+        setCorrectOption(null);
     };
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (options.length < 2) {
-            toast.warn("Adicione pelo menos duas opções.");
-            return;
-        }
-
-        if (correctOption === null) {
-            toast.warn("Selecione a opção correta.");
-            return;
-        }
-
-
-        if (options.some(opt => opt.trim() === "")) {
-            toast.warn("Todas as opções devem estar preenchidas.");
-            return;
-        }
-
         setLoading(true);
 
         try {
-            await api.post(API_ROUTES.POLLS.QUIZZ, {
-                question,
-                options,
-                correctOption,
-                chatId: selectedGroup,
-            }, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            toast.success("Poll enviada com sucesso!");
-            resetForm();
-        } catch (error) {
-            toast.error("Erro ao enviar a Poll. Tente novamente!");
+            if (quizData.length > 0) {
+                await api.post(
+                    API_ROUTES.POLLS.QUIZZ,
+                    {
+                        chatId: selectedGroup,
+                        questions: quizData,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("refresh_token")}`,
+                        },
+                    }
+                );
+                toast.success("Todas as perguntas foram enviadas com sucesso!");
+                resetForm();
+            } else {
+                if (options.length < 2) {
+                    toast.warn("Adicione pelo menos duas opções.");
+                    setLoading(false);
+                    return;
+                }
+                if (correctOption === null) {
+                    toast.warn("Selecione a opção correta.");
+                    setLoading(false);
+                    return;
+                }
+                if (options.some((opt) => opt.trim() === "")) {
+                    toast.warn("Todas as opções devem estar preenchidas.");
+                    setLoading(false);
+                    return;
+                }
+
+                const questionObj = {
+                    question,
+                    options,
+                    correctOption,
+                };
+
+                await api.post(
+                    API_ROUTES.POLLS.QUIZZ,
+                    {
+                        chatId: selectedGroup,
+                        questions: [questionObj],
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("refresh_token")}`,
+                        },
+                    }
+                );
+
+                toast.success("Pergunta enviada com sucesso!");
+                resetForm();
+            }
+        } catch {
+            toast.error("Erro ao enviar as perguntas.");
         } finally {
             setLoading(false);
         }
     };
 
+
     return (
         <>
-            <Header title={'Criar Quizz'} />
+            <Header title={"Criar Quizz"} />
             <Navbar />
             <Logout />
             <div className="container py-5 d-flex justify-content-center align-items-center flex-column">
                 <div
                     onDrop={handleFileDrop}
                     onDragOver={handleDragOver}
-                    className="border border-primary p-4 mb-4 rounded text-center"
-                    style={{ backgroundColor: "#f9f9f9", cursor: "pointer" }}
+                    className="border p-4 mb-4 rounded text-center"
+                    style={{ backgroundColor: "#E05F00", cursor: "pointer", color: "white"}}
                 >
-                    <strong>Arraste e solte um arquivo .MD aqui</strong>
+                    <strong>Arraste e solte um arquivo JSON aqui</strong>
                     <br />
                 </div>
+                {fileName && (
+                    <p className="text-muted mb-4"><strong>{fileName}</strong></p>
+                )}
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="w-100"
-                    style={{ maxWidth: "500px" }}
-                >
+                <form onSubmit={handleSubmit} className="w-100" style={{ maxWidth: 500 }}>
                     <div className="mb-3 mt-1">
-                        <label htmlFor="isProfessor" className={styles.label}>
+                        <label htmlFor="groupSelect" className={styles.label}>
                             Qual é o seu grupo?
                         </label>
                         <select
-                            id="isProfessor"
+                            id="groupSelect"
                             className={styles.inputSelect}
                             value={selectedGroup}
                             onChange={(e) => setSelectedGroup(e.target.value)}
-                            required
+                            required={quizData.length === 0}
                         >
                             <option value="">Selecione</option>
                             {grupos.map((group) => (
@@ -192,20 +200,18 @@ export default function createQuizz() {
                         </select>
                     </div>
 
-
                     <div className="mb-4 mt-3">
-                        <label htmlFor="isProfessor" className={styles.label}>
+                        <label htmlFor="questionInput" className={styles.label}>
                             Qual é a sua pergunta?
                         </label>
                         <input
+                            id="questionInput"
                             className={styles.input}
                             type="text"
                             placeholder="Digite sua pergunta"
                             value={question}
-                            onChange={(e) => {
-                                setQuestion(e.target.value);
-                            }}
-                            required
+                            onChange={(e) => setQuestion(e.target.value)}
+                            required={quizData.length === 0}
                         />
                     </div>
 
@@ -223,21 +229,23 @@ export default function createQuizz() {
                         ))}
                     </div>
 
-
                     <div className="d-flex justify-content-around mt-3 gap-3">
                         <button className={styles.opcao} type="button" onClick={addOption}>
-                            <Image src={iconPlus} alt="plus"></Image>
+                            <Image src={iconPlus} alt="plus" />
                             Opção
                         </button>
-                        <button className={styles.submitPoll} type="submit" disabled={loading}>
+                        <button
+                            className={styles.submitPoll}
+                            type="submit"
+                            disabled={loading}
+                        >
                             {loading ? "Enviando..." : "Enviar"}
                         </button>
-
                     </div>
-                </form >
+                </form>
 
                 <ToastContainer position="top-right" theme="colored" autoClose={3000} />
-            </div >
+            </div>
         </>
     );
 }
