@@ -5,7 +5,7 @@ type User = {
     user_id: number;
     email: string;
     roles: string[];
-}
+};
 
 type AuthContextType = {
     token: string | null;
@@ -13,14 +13,15 @@ type AuthContextType = {
     isAuthenticated: boolean;
     login: (token: string) => void;
     logout: () => void;
-}
+};
 
-const AuthContext = createContext<AuthContextType | null>(null)
+const AuthContext = createContext<AuthContextType | null>(null);
 
 const decodeToken = (token: string): User | null => {
     try {
         return jwtDecode<User>(token);
-    } catch {
+    } catch (error) {
+        console.error("Erro ao decodificar token:", error);
         return null;
     }
 };
@@ -28,8 +29,9 @@ const decodeToken = (token: string): User | null => {
 const isTokenExpired = (token: string): boolean => {
     try {
         const { exp } = jwtDecode<{ exp: number }>(token);
-        return exp * 1000 < Date.now();
-    } catch {
+        return !exp || exp * 1000 < Date.now();
+    } catch (error) {
+        console.error("Erro ao verificar expiração do token:", error);
         return true;
     }
 };
@@ -41,18 +43,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
         if (storedToken && !isTokenExpired(storedToken)) {
-            setToken(storedToken);
             const decoded = decodeToken(storedToken);
-            if (decoded) setUser(decoded);
+            if (decoded) {
+                setToken(storedToken);
+                setUser(decoded);
+            } else {
+                localStorage.removeItem("token");
+            }
         }
     }, []);
 
     const login = (newToken: string) => {
-        localStorage.setItem("token", newToken);
-        setToken(newToken);
-        const decoded = decodeToken(newToken);
-        if (decoded) {
-            setUser(decoded);
+        if (!isTokenExpired(newToken)) {
+            localStorage.setItem("token", newToken);
+            setToken(newToken);
+            const decoded = decodeToken(newToken);
+            if (decoded) {
+                setUser(decoded);
+            } else {
+                logout();
+            }
+        } else {
+            console.warn("Token recebido já está expirado.");
+            logout();
         }
     };
 
@@ -61,18 +74,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setToken(null);
         setUser(null);
     };
-
-    useEffect(() => {
-        if (token) {
-            if (isTokenExpired(token)) {
-                logout();
-            } else {
-                const decoded = decodeToken(token);
-                if (decoded) setUser(decoded);
-                else logout();
-            }
-        }
-    }, [token]);
 
     return (
         <AuthContext.Provider value={{ token, user, isAuthenticated: !!token, login, logout }}>
@@ -85,4 +86,4 @@ export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) throw new Error("useAuth deve ser usado dentro de <AuthProvider>");
     return context;
-}
+};

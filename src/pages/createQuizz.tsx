@@ -20,11 +20,80 @@ export default function createQuizz() {
     const [correctOption, setCorrectOption] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
 
+
     const handleOptionChange = (index: any, value: any) => {
         const newOptions = [...options];
         newOptions[index] = value;
         setOptions(newOptions);
     };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+    };
+
+    const handleFileDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+
+        if (!file || !file.name.endsWith(".md")) {
+            toast.warn("Apenas arquivos .md são permitidos.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const content = event.target?.result as string;
+            const parsed = parseMarkdown(content);
+
+            if (!parsed) {
+                toast.error("Erro ao interpretar o arquivo Markdown.");
+                return;
+            }
+
+            const { question, options, correctOption } = parsed;
+
+            setQuestion(question);
+            setOptions(options);
+            setCorrectOption(correctOption);
+            toast.success("Pergunta carregada com sucesso! Revise e clique em Enviar.");
+        };
+        reader.readAsText(file);
+    };
+
+
+    const parseMarkdown = (markdown: string): {
+        question: string;
+        options: string[];
+        correctOption: number;
+    } | null => {
+        const lines = markdown.trim().split("\n");
+
+        const questionLine = lines.find(line => line.startsWith("#"));
+        if (!questionLine) return null;
+
+        const question = questionLine.replace(/^#\s*/, "").trim();
+        const options: string[] = [];
+        let correctOption = -1;
+
+        lines.forEach((line, index) => {
+            const trimmed = line.trim();
+            if (trimmed.startsWith("- [x]")) {
+                options.push(trimmed.replace("- [x]", "").trim());
+                correctOption = options.length - 1;
+            } else if (trimmed.startsWith("-")) {
+                options.push(trimmed.replace("-", "").trim());
+            }
+        });
+
+        if (question === "" || options.length < 2 || correctOption === -1) {
+            return null;
+        }
+
+        return { question, options, correctOption };
+    };
+
+
+
 
     const addOption = () => setOptions([...options, ""]);
 
@@ -85,9 +154,18 @@ export default function createQuizz() {
     return (
         <>
             <Header title={'Criar Quizz'} />
-            <Navbar/>
-            <Logout/>
+            <Navbar />
+            <Logout />
             <div className="container py-5 d-flex justify-content-center align-items-center flex-column">
+                <div
+                    onDrop={handleFileDrop}
+                    onDragOver={handleDragOver}
+                    className="border border-primary p-4 mb-4 rounded text-center"
+                    style={{ backgroundColor: "#f9f9f9", cursor: "pointer" }}
+                >
+                    <strong>Arraste e solte um arquivo .MD aqui</strong>
+                    <br />
+                </div>
 
                 <form
                     onSubmit={handleSubmit}
