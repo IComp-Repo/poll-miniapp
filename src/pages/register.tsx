@@ -38,8 +38,9 @@ export default function Register() {
       const response = await api.post(API_ROUTES.AUTH.REGISTER, formattedData);
 
       const token = response.data.access_token;
+      const refresh_token = response.data.refresh_token;
       if (token) {
-        auth.login(token);
+        auth.login(token, refresh_token);
         toast.success("Cadastro realizado com sucesso!");
         router.push(APP_ROUTES.LOGIN);
       } else {
