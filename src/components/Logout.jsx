@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
+import { useAuth } from "../shared/context/AuthContext";
 import styles from '../styles/useGlobal.module.css';
 
 export function Logout() {
   const router = useRouter();
+  const auth = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    auth.logout()
     router.push('/login');
   };
 
