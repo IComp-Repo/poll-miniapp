@@ -40,8 +40,9 @@ export default function Login() {
       const response = await api.post(API_ROUTES.AUTH.LOGIN, data);
 
       const token = response.data.access_token;
+      const refresh_token = response.data.refresh_token;
       if (token) {
-        auth.login(token);
+        auth.login(token, refresh_token);
         toast.success("Login realizado com sucesso!");
         router.push(APP_ROUTES.MENU);
       } else {
