@@ -51,3 +51,7 @@ curl -X POST "https://api.telegram.org/botSEU_TOKEN_DO_BOT/setWebhook?url=https:
 
 
 Link de instalação : https://ngrok.com/
+
+## 🟦 Json de example para o DragDrop
+
+-> perguntas.json.example

@@ -1,0 +1,20 @@
+{
+  "chatId": "-1002399252478",
+  "questions": [
+    {
+      "question": "Quem descobriu o Brasil?",
+      "options": ["Pedro Álvares Cabral", "Cristóvão Colombo", "Dom Pedro I"],
+      "correctOption": 0
+    },
+    {
+      "question": "Qual a capital da França?",
+      "options": ["Paris", "Roma", "Madrid"],
+      "correctOption": 0
+    },
+    {
+      "question": "Qual planeta é conhecido como planeta vermelho?",
+      "options": ["Marte", "Vênus", "Saturno"],
+      "correctOption": 0
+    }
+  ]
+}
