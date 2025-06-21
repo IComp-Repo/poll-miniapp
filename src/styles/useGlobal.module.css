@@ -1,32 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 .waveHeader {
-    background-color: #e05800;
-    color: white;
-    padding: 50px 50px;
-    text-align: center;
-    position: relative;
+  background-color: #e05800;
+  color: white;
+  padding: 10px 10px;
+  text-align: center;
+  position: relative;
 }
 
 .waveHeader::after {
-    content: "";
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 100%;
-    height: 30px;
-    background-color: #B34F05;
-    z-index: -1;
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background-color: #B34F05;
+  z-index: -1;
 }
 
 .logoutButton {
   position: absolute;
   top: 20px;
   right: 30px;
-  background-color: #ffffff;
-  color: #e05800;
-  border: 2px solid #e05800;
-  border-radius: 8px;
+  background-color: #01325B;
+  color: #ffffff;
+  border-radius: 5px;
+  border: none;
   padding: 8px 16px;
   font-weight: bold;
   font-family: 'Roboto', sans-serif;
@@ -36,155 +36,179 @@
 }
 
 .logoutButton:hover {
-  background-color: #793407;
+  background-color: #01203a;
   color: #fff;
 }
 
 .input {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    padding-left: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    color: #343A40;
-    border-radius: 20px;
-    background-color: #EEECEC;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  padding-left: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  color: #343A40;
+  border-radius: 20px;
+  background-color: #EEECEC;
 }
 
 .input::placeholder {
-    color: #343A40;
-    font-size: 16px;
-    padding: 10px;
+  color: #343A40;
+  font-size: 16px;
+  padding: 10px;
 }
 
 .submit {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    color: white;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 600;
-    border-radius: 10px;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    background-color: #01325B;
-    cursor: pointer;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  border-radius: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  background-color: #01325B;
+  cursor: pointer;
 }
 
 .submitPoll {
-    width: 255px;
-    height: 38px;
-    padding: 10px;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    color: white;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 600;
-    border-radius: 10px;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    background-color: #01325B;
-    cursor: pointer;
+  width: 255px;
+  height: 38px;
+  padding: 10px;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  border-radius: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  background-color: #01325B;
+  cursor: pointer;
 }
 
 .opcao {
-    width: 255px;
-    height: 38px;
-    padding: 10px;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    color: white;
-    justify-content: center;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 600;
-    border-radius: 10px;
-    align-items: center;
-    display: flex;
-    background-color: #3F998A;
-    cursor: pointer;
+  width: 255px;
+  height: 38px;
+  padding: 10px;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  color: white;
+  justify-content: center;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  border-radius: 10px;
+  align-items: center;
+  display: flex;
+  background-color: #3F998A;
+  cursor: pointer;
 }
 
 .registerButton {
-    background: none;
-    border: none;
-    padding: 0;
-    color: #E05F00;
-    font-weight: bold;
-    text-decoration: none;
-    cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  color: #E05F00;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 
 .title {
-    font-size: 40px;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-weight: extra-bold;
+  font-size: 40px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  text-align: center;
+  cursor: pointer;
+  margin: 0;
+}
+
+.SubTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: #01325B;
+  text-align: center;
+}
+
+.logoTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 10px;
+  gap: 8px;
 }
 
 .label {
-    margin-bottom: 5px;
-    padding: 5px;
-
+  margin-bottom: 5px;
+  padding: 5px;
 }
 
 .inputSelect {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    padding-left: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    color: #000000;
-    border-radius: 20px;
-    background-color: #EEECEC;
-    padding-right: 2.5rem;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('../assets/angle-small-down.png');
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 1rem auto;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  padding-left: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  color: #000000;
+  border-radius: 20px;
+  background-color: #EEECEC;
+  padding-right: 2.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('../assets/angle-small-down.png');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem auto;
 }
 
 .inputSelect::placeholder {
-    color: #343A40;
-    font-size: 16px;
-    padding: 10px;
+  color: #343A40;
+  font-size: 16px;
+  padding: 10px;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    transition: transform 0.2s ease;
+  transform: translateY(-5px);
+  transition: transform 0.2s ease;
 }
 
 .cardHover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #EEECEC;
+  border-radius: 0.4rem;
+  border: none;
 }
 
 .cardHover:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.32);
 }
 
+.icon {
+  width: 40px;
+  height: 40px;
+  fill: #E05F00;
+}
+
+
 .cardTitle {
-    font-size: 1.25rem;
-    font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #01325B;
 }
 
 .cardText {
-    color: #555;
-}
-
-.div_card {
-    background-color: #000000;
+  color: #1E1E1E;
 }
 
 .customRadio {
@@ -213,7 +237,7 @@
   transition: all 0.2s ease-in-out;
 }
 
-.customRadio input:checked ~ .radioMark {
+.customRadio input:checked~.radioMark {
   background-color: #3F998A;
   border-color: #3F998A;
 }
@@ -224,7 +248,7 @@
   display: none;
 }
 
-.customRadio input:checked ~ .radioMark::after {
+.customRadio input:checked~.radioMark::after {
   display: block;
 }
 
@@ -239,17 +263,76 @@
 }
 
 .backButton {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   background: none;
   border: none;
-  color: #fff;
+  color: #E05F00;
   cursor: pointer;
-  z-index: 1000;
+  float: left;
   transition: transform 0.2s;
+  display: flex;
+  align-items: center;
 }
 
 .backButton:hover {
   transform: scale(1.1);
+}
+
+
+.btnCancelar {
+  background-color: #D95858;
+  color: white;
+  border: none;
+}
+
+.btnCancelar:hover {
+  background-color: #b94444;
+}
+
+.btnEnviarAgora {
+  color: #3F998A;
+  border: 1px solid #3F998A;
+  background-color: transparent;
+}
+
+.btnEnviarAgora:hover {
+  background-color: #3F998A;
+  color: white;
+  border: 1px solid #3F998A;
+}
+
+.btnAgendar {
+  background-color: #01325B;
+  color: white;
+  border: none;
+}
+
+.btnAgendar:hover {
+  background-color: #002244;
+  border: none;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.navMenu {
+  display: flex;
+  gap: 20px;
+}
+
+.navItem {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.navItem:hover {
+  background-color: #B34F05;
 }

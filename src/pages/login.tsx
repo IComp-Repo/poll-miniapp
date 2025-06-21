@@ -39,22 +39,21 @@ export default function Login() {
       setLoading(true);
       const response = await api.post(API_ROUTES.AUTH.LOGIN, data);
 
-      const token = response.data.access_token;
-      const refresh_token = response.data.refresh_token;
+      const token = response.data.tokens.access_token;
+      const refresh_token = response.data.tokens.refresh_token;
       if (token) {
         auth.login(token, refresh_token);
-        toast.success("Login realizado com sucesso!");
+        toast.success(response.data.message);
         router.push(APP_ROUTES.MENU);
       } else {
-        toast.error("Token não encontrado na resposta.");
+        toast.error(response.data.message);
       }
-    } catch (error: unknown) {
-      const errorMessage =
-        typeof error === "object" && error !== null && "message" in error
-          ? (error as { message: string }).message
-          : String(error);
-      toast.error("Erro ao Cadastrar-se: " + errorMessage);
-      console.log(errorMessage);
+    } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Ocorreu um erro ao fazer login.");
+      }
     } finally {
       setLoading(false);
     }
@@ -62,7 +61,7 @@ export default function Login() {
 
   return (
     <>
-      <Header title={"Knowledge Check Bot"} />
+      <Header title={"Knowledge Check Bot"} showMenu={false} />
 
       <div className="container py-5 d-flex flex-column align-items-center">
         <form

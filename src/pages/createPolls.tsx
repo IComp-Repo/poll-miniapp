@@ -1,4 +1,3 @@
-import { Logout } from "@/components/Logout";
 import api from "@/config/axios";
 import { API_ROUTES } from "@/config/routes";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -56,7 +55,7 @@ export default function createPolls() {
     setLoading(true);
 
     try {
-      await api.post(API_ROUTES.POLLS.CREATE, {
+      const response = await api.post(API_ROUTES.POLLS.CREATE, {
         question,
         options,
         chatId: selectedGroup,
@@ -65,10 +64,10 @@ export default function createPolls() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      toast.success("Poll enviada com sucesso!");
+      toast.success(response.data.message || "Quizz enviado com sucesso!");
       resetForm();
-    } catch (error) {
-      toast.error("Erro ao enviar a Poll. Tente novamente!");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Erro ao criar enquete!");
     } finally {
       setLoading(false);
     }
@@ -76,11 +75,10 @@ export default function createPolls() {
 
   return (
     <>
-      <Header title={'Criar Enquetes'} />
-      <Navbar/>
-      <Logout/>
+      <Header title={'Knowledge Check Bot'} showMenu={true} />
+      <Navbar />
+      <h1 className={styles.SubTitle}> Criar Enquete</h1>
       <div className="container py-5 d-flex justify-content-center align-items-center flex-column">
-
         <form
           onSubmit={handleSubmit}
           className="w-100"

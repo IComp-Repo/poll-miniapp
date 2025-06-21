@@ -46,13 +46,8 @@ export default function Register() {
       } else {
         toast.error("Token não encontrado na resposta.");
       }
-    } catch (error: unknown) {
-      const errorMessage =
-        typeof error === "object" && error !== null && "message" in error
-          ? (error as { message: string }).message
-          : String(error);
-      toast.error("Erro ao Cadastrar-se: " + errorMessage);
-      console.log(errorMessage);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -60,7 +55,7 @@ export default function Register() {
 
   return (
     <>
-      <Header title={'Knowledge Check Bot'} />
+      <Header title={'Knowledge Check Bot'} showMenu={false} />
 
       <div className="container py-5 d-flex flex-column align-items-center" color="#F8F9FA">
 
