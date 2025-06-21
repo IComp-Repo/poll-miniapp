@@ -16,7 +16,7 @@ export default function Header({ title, showMenu = true }) {
 
         {showMenu && (
           <nav className={styles.navMenu}>
-            <Link href="/CreatePolls" className={styles.navItem}>Criar Enquete</Link>
+            <Link href="/createPolls" className={styles.navItem}>Criar Enquete</Link>
             <Link href="/createQuizz" className={styles.navItem}>Criar Quiz</Link>
             <Link href="/logout" className={styles.navItem}>Sair</Link>
           </nav>
