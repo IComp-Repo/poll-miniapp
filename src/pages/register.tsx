@@ -188,7 +188,7 @@ export default function Register() {
           )}
         </form>
 
-        <ToastContainer position="top-right" theme="colored" autoClose={3000} />
+        <ToastContainer position="top-right" autoClose={3000} />
         <p className="mt-3">
           Já tem conta?{" "}
           <Link href="/login"

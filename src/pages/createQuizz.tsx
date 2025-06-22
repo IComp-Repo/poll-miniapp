@@ -88,7 +88,7 @@ export default function createQuizz() {
             toast.success(response.data.message);
             resetForm();
         } catch (error: any) {
-            toast.error(error?.response?.data?.message);
+            toast.error(error.data.message);
         } finally {
             setLoading(false);
         }
@@ -203,7 +203,7 @@ export default function createQuizz() {
                         }}
                     />
                 </form>
-                <ToastContainer position="top-right" theme="colored" autoClose={3000} />
+                <ToastContainer position="top-right" autoClose={3000} />
             </div>
         </>
     );

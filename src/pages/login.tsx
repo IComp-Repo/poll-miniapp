@@ -49,8 +49,8 @@ export default function Login() {
         toast.error(response.data.message);
       }
     } catch (error: any) {
-      if (error.response && error.response.data && error.response.data.message) {
-        toast.error(error.response.data.message);
+      if (error) {
+        toast.error(error.data.message);
       } else {
         toast.error("Ocorreu um erro ao fazer login.");
       }
@@ -131,7 +131,7 @@ export default function Login() {
           </button>
         </form>
 
-        <ToastContainer position="top-right" theme="colored" autoClose={3000} />
+        <ToastContainer position="top-right" autoClose={3000} />
         <p className="mt-3">
           Ainda não tem conta?{" "}
           <Link href="/register" className={styles.registerButton}>
