@@ -67,7 +67,7 @@ export default function createPolls() {
       toast.success(response.data.message || "Quizz enviado com sucesso!");
       resetForm();
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Erro ao criar enquete!");
+      toast.error((error.data.message) || "Erro ao criar enquete!");
     } finally {
       setLoading(false);
     }
@@ -145,7 +145,7 @@ export default function createPolls() {
           </div>
         </form >
 
-        <ToastContainer position="top-right" theme="colored" autoClose={3000} />
+        <ToastContainer position="top-right" autoClose={3000} />
       </div >
     </>
   );
