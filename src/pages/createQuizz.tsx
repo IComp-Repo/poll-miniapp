@@ -83,8 +83,6 @@ export default function createQuizz() {
                 };
             }
 
-            console.log("Enviando:", payload);
-
             const response = await api.post(API_ROUTES.POLLS.QUIZZ, payload, { headers });
 
             toast.success(response.data.message);
