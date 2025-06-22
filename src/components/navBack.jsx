@@ -6,7 +6,7 @@ export default function NavBack() {
   const router = useRouter();
 
   return (
-    <>
+    <div style={{padding: 30}} >
       <button
         onClick={() => router.back()}
         className={styles.backButton}
@@ -14,6 +14,6 @@ export default function NavBack() {
       >
         <FiArrowLeft size={24} />
       </button>
-    </>
+    </div>
   );
 }
