@@ -1,6 +1,7 @@
 import CerebroIcon from "@/assets/cerebro-interrogacao.svg";
 import EnqueteIcon from "@/assets/enquete-dashboard.svg";
 import UsersIcon from "@/assets/usuarios.svg";
+import GraficoReposta from "@/components/GraficoResposta";
 import Header from "@/components/Header";
 import StatCard from "@/components/StatCard";
 
@@ -15,11 +16,21 @@ const json = [{
     value: 25,
 }];
 
+const data = [
+    { dia: 'Seg', respostas: 20 },
+    { dia: 'Ter', respostas: 20 },
+    { dia: 'Qua', respostas: 60 },
+    { dia: 'Qui', respostas: 40 },
+    { dia: 'Sex', respostas: 0 },
+];
+
 export default function Dashboard() {
     return (
         <>
             <Header title="Knowledge Check Bot" showMenu={true} />
-            <div className="container mt-4 d-flex justify-content-around gap-4">
+
+            {/* Cards principais */}
+            <div className="container mt-4 d-flex justify-content-between gap-4 ">
                 {json.map((item, index) => (
                     <StatCard
                         key={index}
@@ -27,11 +38,15 @@ export default function Dashboard() {
                         value={item.value}
                         icon={
                             item.title === "Total Enquetes" ? <EnqueteIcon width={32} height={32} /> :
-                                item.title === "Total Quizzes" ? <CerebroIcon width={32} height={32} /> :
-                                    <UsersIcon width={32} height={32} />
+                            item.title === "Total Quizzes" ? <CerebroIcon width={32} height={32} /> :
+                            <UsersIcon width={32} height={32} />
                         }
                     />
                 ))}
+            </div>
+
+            <div className="container mt-4 d-flex justify-content-center">
+                <GraficoReposta />
             </div>
         </>
     );
