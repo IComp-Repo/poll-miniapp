@@ -12,7 +12,7 @@ import Navbar from "../components/navBack";
 import styles from "../styles/useGlobal.module.css";
 import { fetchGroups, type Group } from "../shared/Group";
 
-export default function sendPoll() {
+export default function createPoll() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const [selectedGroup, setSelectedGroup] = useState("");
@@ -112,7 +112,7 @@ export default function sendPoll() {
               ))}
             </select>
           </div>
-
+              
           <div className="mb-4 mt-3">
             <label htmlFor="isProfessor" className={styles.label}>
               Qual é a sua pergunta?
