@@ -8,6 +8,7 @@ export const baseRegisterSchema = z.object({
         required_error: "Selecione se você é professor",
         invalid_type_error: "Selecione se você é professor",
     }),
+    telegram_id: z.number().optional(),
 });
 
 export type RegisterSchemaInput = z.input<typeof baseRegisterSchema>; 

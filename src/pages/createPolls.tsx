@@ -2,21 +2,30 @@ import api from "@/config/axios";
 import { API_ROUTES } from "@/config/routes";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import iconPlus from "../assets/icon.png";
 import Header from "../components/Header";
 import EnqueteOption from "../components/enqueteOption";
 import Navbar from "../components/navBack";
-import grupos from "../params/grupos.json";
 import styles from "../styles/useGlobal.module.css";
+import { fetchGroups, type Group } from "../shared/Group";
 
-export default function createPolls() {
+export default function sendPoll() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const [selectedGroup, setSelectedGroup] = useState("");
   const [loading, setLoading] = useState(false);
+  const [grupos, setGrupos] = useState<Group[]>([]);
+
+  useEffect(() => {
+    const loadGroups = async () => {
+      const data = await fetchGroups();
+      if (data) setGrupos(data);
+    };
+    loadGroups();
+  }, []);
 
   const handleOptionChange = (index: any, value: any) => {
     const newOptions = [...options];
@@ -47,7 +56,7 @@ export default function createPolls() {
       return;
     }
 
-    if (options.some(opt => opt.trim() === "")) {
+    if (options.some((opt) => opt.trim() === "")) {
       toast.warn("Todas as opções devem estar preenchidas.");
       return;
     }
@@ -97,13 +106,12 @@ export default function createPolls() {
             >
               <option value="">Selecione</option>
               {grupos.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.name}
+                <option key={group.chat_id} value={group.chat_id}>
+                  {group.title}
                 </option>
               ))}
             </select>
           </div>
-
 
           <div className="mb-4 mt-3">
             <label htmlFor="isProfessor" className={styles.label}>
@@ -141,7 +149,6 @@ export default function createPolls() {
             <button className={styles.submitPoll} type="submit" disabled={loading}>
               {loading ? "Enviando..." : "Enviar"}
             </button>
-
           </div>
         </form >
 

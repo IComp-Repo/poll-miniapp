@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
+    "@telegram-apps/sdk": "^3.11.4",
     "axios": "^1.9.0",
     "bootstrap": "^5.3.6",
     "jwt-decode": "^4.0.0",

@@ -1,16 +1,27 @@
 import { APP_ROUTES } from '@/config/routes';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { retrieveLaunchParams, LaunchParams } from '@telegram-apps/sdk';
 
 export default function IndexPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      router.replace(APP_ROUTES.LOGIN);
-    }, 2000);
+    async function checkUser() {
+      try {
+        const params: LaunchParams = retrieveLaunchParams()
+        const user = params.tgWebAppData?.user
 
-    return () => clearTimeout(timer);
+        if (user) {
+          sessionStorage.setItem("telegram_user", JSON.stringify(user))
+        }
+      } catch (error) {
+        console.warn("Telegram user not found in launch params.");
+      }
+      router.replace(APP_ROUTES.LOGIN);
+    }
+
+    checkUser();
   }, []);
 
   return (
