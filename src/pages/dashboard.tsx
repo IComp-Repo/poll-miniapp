@@ -4,6 +4,7 @@ import UsersIcon from "@/assets/usuarios.svg";
 import GraficoReposta from "@/components/GraficoResposta";
 import Header from "@/components/Header";
 import StatCard from "@/components/StatCard";
+import UltimasAtividades from "@/components/UltimasAtividades";
 
 const json = [{
     title: "Total Enquetes",
@@ -24,12 +25,21 @@ const data = [
     { dia: 'Sex', respostas: 0 },
 ];
 
+const dadosAtividades = [
+    {
+        id: 1,
+        title: 'Enquete sobre cosmologia',
+        type: 'Enquete',
+        date: '25/06/2025',
+        answers: '',
+    },
+]
+
 export default function Dashboard() {
     return (
         <>
             <Header title="Knowledge Check Bot" showMenu={true} />
 
-            {/* Cards principais */}
             <div className="container mt-4 d-flex justify-content-between gap-4 ">
                 {json.map((item, index) => (
                     <StatCard
@@ -38,15 +48,26 @@ export default function Dashboard() {
                         value={item.value}
                         icon={
                             item.title === "Total Enquetes" ? <EnqueteIcon width={32} height={32} /> :
-                            item.title === "Total Quizzes" ? <CerebroIcon width={32} height={32} /> :
-                            <UsersIcon width={32} height={32} />
+                                item.title === "Total Quizzes" ? <CerebroIcon width={32} height={32} /> :
+                                    <UsersIcon width={32} height={32} />
                         }
                     />
                 ))}
             </div>
 
             <div className="container mt-4 d-flex justify-content-center">
-                <GraficoReposta />
+                <GraficoReposta
+                    title="Respostas por dia"
+                    data={data}
+                    xAxisKey="dia"
+                    yAxisKey="respostas"
+                />
+            </div>
+            <div className="container d-flex ">
+            <h3 style={{ color: '#003366', marginTop: '10px' }}>Últimas Atividades</h3>
+            </div>
+            <div className="container d-flex justify-content-center">
+                <UltimasAtividades data={dadosAtividades}/>
             </div>
         </>
     );
