@@ -7,6 +7,9 @@ export const API_ROUTES = {
     CREATE: '/api/send-poll/',
     QUIZZ: '/api/send-quiz/'
   },
+  GROUPS: {
+    SHOW: '/api/user-groups/'
+  }
 };
 
 
