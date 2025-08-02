@@ -10,6 +10,7 @@ Um miniapp de enquetes para professores, integrado ao Telegram! Crie e gerencie 
 - **Axios** (requisições HTTP)
 - **React-Toastify** (notificações toast)
 - **Telegram Bot API** (integração com Telegram)
+- **Telegram Mini Apps SDK** (https://docs.telegram-mini-apps.com/)
 
 ---
 

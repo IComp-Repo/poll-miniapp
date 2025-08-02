@@ -3,7 +3,7 @@ import api from "@/config/axios";
 import { API_ROUTES } from "@/config/routes";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import iconPlus from "../assets/icon.png";
@@ -11,17 +11,26 @@ import AgendamentoModal from "../components/AgendamentoModal";
 import Header from "../components/Header";
 import Navbar from "../components/navBack";
 import QuizOption from "../components/quizOption";
-import grupos from "../params/grupos.json";
 import styles from "../styles/useGlobal.module.css";
+import { fetchGroups, type Group } from "../shared/Group";
 
 export default function createQuizz() {
     const [question, setQuestion] = useState("");
     const [options, setOptions] = useState(["", ""]);
+    const [grupos, setGrupos] = useState<Group[]>([]);
     const [selectedGroup, setSelectedGroup] = useState("");
     const [correctOption, setCorrectOption] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
     const [quizData, setQuizData] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+        const loadGroups = async () => {
+        const data = await fetchGroups();
+        if (data) setGrupos(data);
+        };
+        loadGroups();
+    }, []);
 
     const handleOptionChange = (index: number, value: string) => {
         const newOptions = [...options];
@@ -142,12 +151,12 @@ export default function createQuizz() {
                             onChange={(e) => setSelectedGroup(e.target.value)}
                             required={quizData.length === 0}
                         >
-                            <option value="">Selecione</option>
-                            {grupos.map((group) => (
-                                <option key={group.id} value={group.id}>
-                                    {group.name}
-                                </option>
-                            ))}
+                        <option value="">Selecione</option>
+                        {grupos.map((group) => (
+                            <option key={group.chat_id} value={group.chat_id}>
+                            {group.title}
+                            </option>
+                        ))}
                         </select>
                     </div>
 

@@ -29,10 +29,18 @@ export default function Register() {
 
 
   const onSubmit = async (data: RegisterSchemaInput) => {
+    const rawTelegramUser = sessionStorage.getItem("telegram_user");
+    const parsedTelegramUser = rawTelegramUser ? JSON.parse(rawTelegramUser) : null;
+
     const formattedData = {
       ...data,
       is_professor: String(data.is_professor) === "true" ? true : false,
     };
+
+    if (parsedTelegramUser?.id) {
+      formattedData.telegram_id = parsedTelegramUser.id;
+    }
+
     try {
       setLoading(true);
       const response = await api.post(API_ROUTES.AUTH.REGISTER, formattedData);
