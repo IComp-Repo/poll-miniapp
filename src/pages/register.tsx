@@ -29,24 +29,18 @@ export default function Register() {
 
 
   const onSubmit = async (data: RegisterSchemaInput) => {
-    const rawTelegramUser = sessionStorage.getItem("telegram_user");
-    const parsedTelegramUser = rawTelegramUser ? JSON.parse(rawTelegramUser) : null;
 
     const formattedData = {
       ...data,
       is_professor: String(data.is_professor) === "true" ? true : false,
     };
 
-    if (parsedTelegramUser?.id) {
-      formattedData.telegram_id = parsedTelegramUser.id;
-    }
-
     try {
       setLoading(true);
       const response = await api.post(API_ROUTES.AUTH.REGISTER, formattedData);
 
-      const token = response.data.access_token;
-      const refresh_token = response.data.refresh_token;
+      const token = response.data.tokens.access_token;
+      const refresh_token = response.data.tokens.refresh_token;
       if (token) {
         auth.login(token, refresh_token);
         toast.success("Cadastro realizado com sucesso!");
@@ -55,7 +49,7 @@ export default function Register() {
         toast.error("Token não encontrado na resposta.");
       }
     } catch (error: any) {
-      toast.error(error?.response?.data?.message);
+      toast.error(error.data.message);
     } finally {
       setLoading(false);
     }

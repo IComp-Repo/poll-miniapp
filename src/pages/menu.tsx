@@ -1,4 +1,5 @@
 import Enquete from '@/assets/enquete-h.svg';
+import Grafico from "@/assets/grafico-histograma.svg";
 import Quiz from '@/assets/interrogatorio.svg';
 import Header from "@/components/Header";
 import styles from '@/styles/useGlobal.module.css';
@@ -18,6 +19,12 @@ export default function Menu() {
             title: "Criar Quiz",
             text: "Monte quizzes com respostas corretas.",
             link: "/createQuizz",
+        },
+        {
+            icon: <Grafico className={styles.icon} />,
+            title: "Dashboard",
+            text: "Visualize estatísticas de enquetes e quizzes.",
+            link: "/dashboard",
         },
     ];
 
