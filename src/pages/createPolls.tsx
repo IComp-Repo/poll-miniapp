@@ -2,30 +2,22 @@ import api from "@/config/axios";
 import { API_ROUTES } from "@/config/routes";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import iconPlus from "../assets/icon.png";
 import Header from "../components/Header";
 import EnqueteOption from "../components/enqueteOption";
 import Navbar from "../components/navBack";
+import grupos from "../params/grupos.json";
 import styles from "../styles/useGlobal.module.css";
-import { fetchGroups, type Group } from "../shared/Group";
 
 export default function createPoll() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const [selectedGroup, setSelectedGroup] = useState("");
   const [loading, setLoading] = useState(false);
-  const [grupos, setGrupos] = useState<Group[]>([]);
 
-  useEffect(() => {
-    const loadGroups = async () => {
-      const data = await fetchGroups();
-      if (data) setGrupos(data);
-    };
-    loadGroups();
-  }, []);
 
   const handleOptionChange = (index: any, value: any) => {
     const newOptions = [...options];
@@ -70,7 +62,7 @@ export default function createPoll() {
         chatId: selectedGroup,
       }, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       });
       toast.success(response.data.message || "Quizz enviado com sucesso!");
@@ -106,8 +98,8 @@ export default function createPoll() {
             >
               <option value="">Selecione</option>
               {grupos.map((group) => (
-                <option key={group.chat_id} value={group.chat_id}>
-                  {group.title}
+                <option key={group.id} value={group.id}>
+                  {group.name}
                 </option>
               ))}
             </select>

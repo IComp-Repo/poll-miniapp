@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://bot-telegram-test-server1.onrender.com', 
+  baseURL: 'https://web-production-9089.up.railway.app/', 
   timeout: 10000, 
 });
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }

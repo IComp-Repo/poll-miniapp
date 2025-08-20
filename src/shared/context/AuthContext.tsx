@@ -39,13 +39,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("token");
+        const storedToken = sessionStorage.getItem("token");
         if (storedToken && !isTokenExpired(storedToken)) {
             setToken(storedToken);
             const decoded = decodeToken(storedToken);
             if (decoded) setUser(decoded);
         } else {
-            const storedRefreshToken = localStorage.getItem("refresh_token");
+            const storedRefreshToken = sessionStorage.getItem("refresh_token");
             if (storedRefreshToken) {
                 setToken(storedRefreshToken);
                 const decoded = decodeToken(storedRefreshToken);
@@ -57,8 +57,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     const login = (newToken: string, refresh_token: string) => {
-        localStorage.setItem("token", newToken);
-        localStorage.setItem("refresh_token", refresh_token);
+        sessionStorage.setItem("token", newToken);
+        sessionStorage.setItem("refresh_token", refresh_token);
         setToken(newToken);
         const decoded = decodeToken(newToken);
         if (decoded) {
@@ -67,8 +67,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("refresh_token");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("refresh_token");
         setToken(null);
         setUser(null);
     };
