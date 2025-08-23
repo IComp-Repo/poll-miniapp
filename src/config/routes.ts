@@ -10,6 +10,7 @@ export const API_ROUTES = {
   GROUPS: {
     SHOW: '/api/user-groups/'
   }
+  
 };
 
 

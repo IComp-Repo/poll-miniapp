@@ -1,4 +1,4 @@
-import { API_ROUTES } from "@/config/routes";
+import { APP_ROUTES } from "@/config/routes";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "../shared/context/AuthContext";
@@ -13,7 +13,7 @@ export default function LogoutPage() {
     auth.logout();
 
     const timer = setTimeout(() => {
-      router.replace(API_ROUTES.AUTH.LOGIN);
+      router.replace(APP_ROUTES.LOGIN);
     }, 500);
 
     return () => clearTimeout(timer);
