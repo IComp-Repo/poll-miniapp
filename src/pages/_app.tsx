@@ -10,6 +10,7 @@ declare global {
     Telegram?: {
       WebApp?: {
         platform?: string;
+        ready?: () => void;
         [key: string]: any;
       };
       [key: string]: any;
@@ -19,13 +20,13 @@ declare global {
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
-  if (window.Telegram?.WebApp?.platform) {
-    init();
-  } else {
-    console.warn('Não está rodando dentro do Telegram WebApp.');
-  }
-}, []);
-
+    if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+      init();
+      window.Telegram.WebApp.ready?.();
+    } else {
+      console.warn("Não está rodando dentro do Telegram WebApp.");
+    }
+  }, []);
 
   return (
     <AuthProvider>

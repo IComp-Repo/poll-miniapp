@@ -1,5 +1,6 @@
-import { API_ROUTES, APP_ROUTES } from "@/config/routes";
+import { APP_ROUTES } from "@/config/routes";
 import { baseRegisterSchema, RegisterSchemaInput } from "@/schemas/registerSchema";
+import { postRegister } from "@/services/post-register";
 import { useAuth } from "@/shared/context/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,7 +10,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import Header from "../components/Header";
-import api from "../config/axios";
 import styles from "../styles/useGlobal.module.css";
 
 export default function Register() {
@@ -30,26 +30,23 @@ export default function Register() {
 
   const onSubmit = async (data: RegisterSchemaInput) => {
 
-    const formattedData = {
-      ...data,
-      is_professor: String(data.is_professor) === "true" ? true : false,
-    };
-
     try {
       setLoading(true);
-      const response = await api.post(API_ROUTES.AUTH.REGISTER, formattedData);
-
-      const token = response.data.tokens.access_token;
-      const refresh_token = response.data.tokens.refresh_token;
-      if (token) {
-        auth.login(token, refresh_token);
-        toast.success("Cadastro realizado com sucesso!");
-        router.push(APP_ROUTES.LOGIN);
+      const response = await postRegister(data);
+      const { tokens, message } = response.data
+      if (tokens.acess_token) {
+        auth.login(tokens.access_token, tokens.refresh_token);
+        toast.success(message || "Registrado com sucesso!");
+        router.push(APP_ROUTES.MENU);
       } else {
-        toast.error("Token não encontrado na resposta.");
+        toast.error("Erro ao registrar usuário");
       }
     } catch (error: any) {
-      toast.error(error.data.message);
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Ocorreu um erro ao fazer login.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
