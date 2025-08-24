@@ -8,7 +8,6 @@ Um miniapp de enquetes para professores, integrado ao Telegram! Crie e gerencie 
 - **Next.js** (framework React para frontend e backend)
 - **Bootstrap** (estilização rápida e responsiva)
 - **Axios** (requisições HTTP)
-- **React-Toastify** (notificações toast)
 - **Telegram Bot API** (integração com Telegram)
 - **Telegram Mini Apps SDK** (https://docs.telegram-mini-apps.com/)
 
