@@ -1,3 +1,4 @@
+import NavBack from "@/components/navBack";
 import { APP_ROUTES } from "@/config/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -57,7 +58,8 @@ export default function Login() {
   return (
     <>
       <Header title={"Knowledge Check Bot"} showMenu={false} />
-
+      <NavBack/>
+      <h1 className={styles.SubTitle}>Login</h1>
       <div className="container py-5 d-flex flex-column align-items-center">
         <form
           onSubmit={handleSubmit(onSubmit)}

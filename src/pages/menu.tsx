@@ -30,7 +30,7 @@ export default function Menu() {
 
     return (
         <>
-            <Header title="Knowledge Check Bot" showMenu={false} />
+            <Header title="Knowledge Check Bot" showMenu={true} />
             <div className="container py-5">
                 <div className="row justify-content-center g-4">
                     {cards.map((card, index) => (

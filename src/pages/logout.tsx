@@ -13,7 +13,7 @@ export default function LogoutPage() {
     auth.logout();
 
     const timer = setTimeout(() => {
-      router.replace(APP_ROUTES.LOGIN);
+      router.replace(APP_ROUTES.PRINCIPAL);
     }, 500);
 
     return () => clearTimeout(timer);

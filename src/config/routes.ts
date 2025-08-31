@@ -18,6 +18,7 @@ export const APP_ROUTES = {
   CREATE_POLLS: '/createPolls',
   LOGIN: '/login',
   REGISTER: '/register',
-  MENU: '/menu'
+  MENU: '/menu',
+  PRINCIPAL: '/'
 };
 
