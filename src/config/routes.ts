@@ -1,7 +1,7 @@
 export const API_ROUTES = {
   AUTH: {
-    LOGIN: '/api/login/',
-    REGISTER: '/api/register/',
+    LOGIN: '/api/auth/login/',
+    REGISTER: '/api/auth/register/',
   },
   POLLS: {
     CREATE: '/api/send-poll/',

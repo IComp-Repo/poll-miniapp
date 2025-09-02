@@ -10,7 +10,7 @@ interface Quiz {
 
 export async function postQuiz(quizData: Quiz[], selectedGroup: string) {
   const headers = {
-    Authorization: `Bearer ${sessionStorage.getItem("refresh_token")}`,
+    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
   };
 
   try {

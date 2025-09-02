@@ -9,7 +9,7 @@ export async function createPolls(question: string, options: string[], groupId: 
             groupId,
         }, {
             headers: {
-                Authorization: `Bearer ${sessionStorage.getItem('refresh_token')}`,
+                Authorization: `Bearer ${sessionStorage.getItem('token')}`,
             },
         });
         return response;

@@ -29,10 +29,10 @@ export default function Register() {
     try {
       setLoading(true);
       const response = await postRegister(data);
-      const { tokens, message } = response.data;
+      const { tokens, message, user} = response.data;
 
       if (tokens.access_token) {
-        auth.login(tokens.access_token, tokens.refresh_token);
+        auth.login(tokens.access_token, user.name, user.email, user.avatar);
         toast.success(message || "Registrado com sucesso!");
         router.push(APP_ROUTES.MENU);
       } else {
@@ -60,6 +60,16 @@ export default function Register() {
           className="w-100"
           style={{ maxWidth: "400px" }}
         >
+          <div className="mb-3">
+            <input
+              type="text"
+              placeholder="Seu Nome"
+              className={styles.input}
+              {...register("name")}
+              aria-invalid={errors.name ? "true" : "false"}
+            />
+            {errors.name && <p className="text-danger mt-1">{errors.name.message}</p>}
+          </div>
           <div className="mb-3">
             <input
               type="email"

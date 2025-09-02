@@ -4,22 +4,24 @@ import { createContext, useContext, useEffect, useState } from "react";
 type User = {
   user_id: number;
   email: string;
+  name: string;
   roles: string[];
-}
+  avatar?: string;
+};
 
 type AuthContextType = {
   token: string | null;
   user: User | null;
   isAuthenticated: boolean;
-  login: (token: string, refresh_token: string) => void;
+  login: (token: string) => Promise<void>;
   logout: () => void;
-}
+};
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const decodeToken = (token: string): User | null => {
+const decodeToken = (token: string): { user_id: number } | null => {
   try {
-    return jwtDecode<User>(token);
+    return jwtDecode<{ user_id: number }>(token);
   } catch {
     return null;
   }
@@ -38,17 +40,42 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (newToken: string, refresh_token: string) => {
+  const fetchUserData = async (user_id: number, newToken: string) => {
+    try {
+      const res = await fetch(`/api/users/${user_id}`, {
+        headers: {
+          Authorization: `Bearer ${newToken}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Erro ao buscar usuário");
+      const data = await res.json();
+
+      setUser({
+        user_id,
+        name: data.name,
+        email: data.email,
+        roles: data.roles || [],
+        avatar: data.avatar,
+      });
+    } catch (err) {
+      console.error(err);
+      setUser({ user_id, name: "Usuário", email: "", roles: [] });
+    }
+  };
+
+  const login = async (newToken: string) => {
     sessionStorage.setItem("token", newToken);
-    sessionStorage.setItem("refresh_token", refresh_token);
     setToken(newToken);
+
     const decoded = decodeToken(newToken);
-    if (decoded) setUser(decoded);
+    if (decoded?.user_id) {
+      await fetchUserData(decoded.user_id, newToken);
+    }
   };
 
   const logout = () => {
     sessionStorage.removeItem("token");
-    sessionStorage.removeItem("refresh_token");
     setToken(null);
     setUser(null);
   };
@@ -58,35 +85,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (storedToken && !isTokenExpired(storedToken)) {
       setToken(storedToken);
       const decoded = decodeToken(storedToken);
-      if (decoded) setUser(decoded);
-    } else {
-      const storedRefreshToken = sessionStorage.getItem("refresh_token");
-      if (storedRefreshToken) {
-        fetch("auth/token/refresh/", {
-          method: "POST",
-          body: JSON.stringify({ refresh_token: storedRefreshToken }),
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.token) login(data.token, storedRefreshToken);
-            else logout();
-          })
-          .catch(() => logout());
-      } else {
-        logout();
+      if (decoded?.user_id) {
+        fetchUserData(decoded.user_id, storedToken);
       }
+    } else {
+      logout();
     }
   }, []);
 
   useEffect(() => {
-    if (token) {
-      if (isTokenExpired(token)) {
-        logout();
-      } else {
-        const decoded = decodeToken(token);
-        if (decoded) setUser(decoded);
-        else logout();
-      }
+    if (token && isTokenExpired(token)) {
+      logout();
     }
   }, [token]);
 

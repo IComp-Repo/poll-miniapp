@@ -371,3 +371,47 @@
   height: 32px;
   border-radius: 5px; 
 }
+
+.rightContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.avatarImg {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  width: 40px;
+  height: 40px;
+  margin-left: 5rem;
+  border-radius: 50%;
+  background: #01325B;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.labelAvatar {
+  margin-right: 10px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+

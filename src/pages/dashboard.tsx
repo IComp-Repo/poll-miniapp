@@ -3,8 +3,10 @@ import EnqueteIcon from "@/assets/enquete-dashboard.svg";
 import UsersIcon from "@/assets/usuarios.svg";
 import GraficoReposta from "@/components/GraficoResposta";
 import Header from "@/components/Header";
+import NavBack from "@/components/navBack";
 import StatCard from "@/components/StatCard";
 import UltimasAtividades from "@/components/UltimasAtividades";
+import styles from "@/styles/useGlobal.module.css";
 
 const json = [{
     title: "Total Enquetes",
@@ -39,7 +41,8 @@ export default function Dashboard() {
     return (
         <>
             <Header title="Knowledge Check Bot" showMenu={true} />
-
+            <NavBack />
+            <h1 className={styles.SubTitle}>Dashboard de Atividades</h1>
             <div className="container mt-4 d-flex justify-content-between gap-4 ">
                 {json.map((item, index) => (
                     <StatCard
@@ -64,10 +67,10 @@ export default function Dashboard() {
                 />
             </div>
             <div className="container d-flex ">
-            <h3 style={{ color: '#003366', marginTop: '10px' }}>Últimas Atividades</h3>
+                <h3 style={{ color: '#003366', marginTop: '10px' }}>Últimas Atividades</h3>
             </div>
             <div className="container d-flex justify-content-center">
-                <UltimasAtividades data={dadosAtividades}/>
+                <UltimasAtividades data={dadosAtividades} />
             </div>
         </>
     );

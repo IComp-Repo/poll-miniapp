@@ -35,10 +35,10 @@ export default function Login() {
       setLoading(true)
       const response = await postLogin(data);
 
-      const {tokens, message} = response.data;
+      const {tokens, message, user} = response.data;
 
       if (tokens?.access_token) {
-        auth.login(tokens.acess_token, tokens.refresh_token);
+        auth.login(tokens.access_token, user.name, user.email, user.avatar);
         toast.success(message);
         router.push(APP_ROUTES.MENU);
       } else {

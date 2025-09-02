@@ -1,9 +1,7 @@
 import Login from '@/assets/entrance.svg';
-import sideImage from '@/assets/side-image.png';
 import Header from '@/components/Header';
 import styles from '@/styles/useGlobal.module.css';
 import "bootstrap/dist/css/bootstrap.min.css";
-import Image from "next/image";
 import Link from "next/link";
 
 const cards = [
@@ -50,17 +48,6 @@ export default function IndexPage() {
                 </article>
               </Link>
             ))}
-          </div>
-
-          <div className="flex-grow-1 d-flex m-lg-3 justify-content-center">
-            <Image 
-              src={sideImage} 
-              alt="Ilustração do projeto" 
-              width={500} 
-              height={500} 
-              className="img-fluid"
-              priority
-            />
           </div>
 
         </div>
