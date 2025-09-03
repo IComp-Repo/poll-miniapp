@@ -1,9 +1,12 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { init } from '@telegram-apps/sdk';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from '../shared/context/AuthContext';
+
+const queryClient = new QueryClient();
 
 declare global {
   interface Window {
@@ -29,8 +32,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <AuthProvider>
-      <Component {...pageProps} />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

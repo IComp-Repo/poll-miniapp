@@ -9,8 +9,6 @@ export default function Header({ title, showMenu = true }) {
   const router = useRouter();
   const { user } = useAuth();
 
-  console.log(user);
-
   return (
     <header className={styles.waveHeader}>
       <div className={styles.headerContent}>

@@ -1,6 +1,7 @@
 import NavBack from "@/components/navBack";
 import { APP_ROUTES } from "@/config/routes";
 import { baseRegisterSchema, RegisterSchemaInput } from "@/schemas/registerSchema";
+import { postLinkTelegram } from "@/services/post-link-telegram";
 import { postRegister } from "@/services/post-register";
 import { useAuth } from "@/shared/context/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +30,19 @@ export default function Register() {
     try {
       setLoading(true);
       const response = await postRegister(data);
-      const { tokens, message, user} = response.data;
+      const { tokens, message, user } = response.data;
+      try {
+        const telegramUser = await postLinkTelegram(tokens.access_token);
+
+        if (telegramUser?.deep_link) {
+          window.open(telegramUser.deep_link, "_blank"); // abre em nova aba
+        } else {
+          console.error("Deep link não retornado pelo servidor");
+        }
+      } catch (err) {
+        console.error("Erro ao vincular Telegram:", err);
+      }
+
 
       if (tokens.access_token) {
         auth.login(tokens.access_token, user.name, user.email, user.avatar);

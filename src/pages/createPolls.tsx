@@ -1,3 +1,5 @@
+import { getGroups } from "@/services/get-groups";
+import { useQuery } from '@tanstack/react-query';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import { useState } from "react";
@@ -7,7 +9,6 @@ import iconPlus from "../assets/icon.png";
 import Header from "../components/Header";
 import EnqueteOption from "../components/enqueteOption";
 import Navbar from "../components/navBack";
-import grupos from "../params/grupos.json";
 import { createPolls } from "../services/post-enquete";
 import styles from "../styles/useGlobal.module.css";
 
@@ -16,6 +17,13 @@ export default function CreatePoll() {
   const [options, setOptions] = useState(["", ""]);
   const [selectedGroup, setSelectedGroup] = useState("");
   const [loading, setLoading] = useState(false);
+
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['groups'],
+    queryFn: getGroups,
+    staleTime: 1000 * 60,
+  });
 
 
   const handleOptionChange = (index: number, value: string) => {
@@ -105,11 +113,12 @@ export default function CreatePoll() {
               required
             >
               <option value="">Selecione</option>
-              {grupos.map((group) => (
+              {data?.map((group: any) => (
                 <option key={group.id} value={group.id}>
                   {group.name}
                 </option>
-              ))}
+              )) || null}
+
             </select>
           </div>
 

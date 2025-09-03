@@ -1,6 +1,6 @@
 import FileUploader from "@/components/FileUpload";
-import grupos from "@/params/grupos.json";
 import { postQuiz } from "@/services/post-quizz";
+import { useQuery } from '@tanstack/react-query';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import { useState } from "react";
@@ -12,6 +12,7 @@ import Header from "../components/Header";
 import Navbar from "../components/navBack";
 import QuizOption from "../components/quizOption";
 import { Quiz } from "../schemas/interfaceQuizz";
+import { getGroups } from "../services/get-groups";
 import styles from "../styles/useGlobal.module.css";
 
 export default function CreateQuizz() {
@@ -22,6 +23,12 @@ export default function CreateQuizz() {
     const [loading, setLoading] = useState(false);
     const [quizData, setQuizData] = useState<Quiz[]>([]);
     const [showModal, setShowModal] = useState(false);
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['groups'],
+        queryFn: getGroups,
+        staleTime: 1000 * 60,
+    });
 
     const handleOptionChange = (index: number, value: string) => {
         const newOptions = [...options];
@@ -138,11 +145,11 @@ export default function CreateQuizz() {
                             required={quizData.length === 0}
                         >
                             <option value="">Selecione</option>
-                            {grupos.map((group) => (
+                            {data?.map((group: any) => (
                                 <option key={group.id} value={group.id}>
                                     {group.name}
                                 </option>
-                            ))}
+                            )) || null}
                         </select>
                     </div>
 

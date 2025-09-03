@@ -9,6 +9,9 @@ export const API_ROUTES = {
   },
   GROUPS: {
     SHOW: '/api/user-groups/'
+  },
+  LINK: {
+    TELEGRAM: 'api/telegram/link/'
   }
   
 };
