@@ -18,13 +18,13 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const decodeToken = (token: string): { user_id: number } | null => {
+/*const decodeToken = (token: string): { user_id: number } | null => {
   try {
     return jwtDecode<{ user_id: number }>(token);
   } catch {
     return null;
   }
-};
+};*/
 
 const isTokenExpired = (token: string): boolean => {
   try {
@@ -39,36 +39,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
-  const fetchUserData = async (user_id: number, newToken: string) => {
-    try {
-      const res = await fetch(`/api/users/${user_id}`, {
-        headers: {
-          Authorization: `Bearer ${newToken}`,
-        },
-      });
-
-      if (!res.ok) throw new Error("Erro ao buscar usuário");
-      const data = await res.json();
-
-      setUser({
-        user_id,
-        name: data.name,
-        email: data.email,
-        roles: data.roles || []
-      });
-    } catch (err) {
-      console.error(err);
-      setUser({ user_id, name: "Usuário", email: "", roles: [] });
-    }
+  const decodeToken = (t: string): { user_id: number; email?: string; name?: string } | null => {
+    try { return jwtDecode(t); } catch { return null; }
   };
 
-  const login = async (newToken: string) => {
+  const login = async (newToken: string, name?: string, email?: string) => {
     sessionStorage.setItem("token", newToken);
     setToken(newToken);
 
-    const decoded = decodeToken(newToken);
+  const decoded = decodeToken(newToken);
     if (decoded?.user_id) {
-      await fetchUserData(decoded.user_id, newToken);
+      setUser({
+        user_id: decoded.user_id,
+        name: name ?? decoded.name ?? "Usuário",
+        email: email ?? decoded.email ?? "",
+        roles: [],
+      });
     }
   };
 
@@ -79,12 +65,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    const storedToken = sessionStorage.getItem("token");
-    if (storedToken && !isTokenExpired(storedToken)) {
-      setToken(storedToken);
-      const decoded = decodeToken(storedToken);
-      if (decoded?.user_id) {
-        fetchUserData(decoded.user_id, storedToken);
+    const stored = sessionStorage.getItem("token");
+    if (stored && !isTokenExpired(stored)) {
+      setToken(stored);
+      const d = decodeToken(stored);
+      if (d?.user_id) {
+        setUser({
+          user_id: d.user_id,
+          name: d.name ?? "Usuário",
+          email: d.email ?? "",
+          roles: [],
+        });
       }
     } else {
       logout();

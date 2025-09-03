@@ -9,18 +9,18 @@ export async function getGroups() {
       return [];
     }
 
-    const response = await api.get('/api/user-groups/', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const { data } = await api.get('/api/user-groups/', {
+      headers: { Authorization: `Bearer ${token}` },
     });
 
-    if (!response.data?.groups) {
+    // {data:{groups}} ou {groups}
+    const groups = data?.data?.groups ?? data?.groups ?? [];
+
+    if (!groups.length) {
       toast.warn("Nenhum grupo encontrado.");
-      return [];
     }
 
-    return response.data.groups;
+    return groups;
   } catch (error: any) {
     const message =
       error?.response?.data?.message ||
@@ -30,3 +30,4 @@ export async function getGroups() {
     return [];
   }
 }
+

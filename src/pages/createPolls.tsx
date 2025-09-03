@@ -78,6 +78,8 @@ export default function CreatePoll() {
 
     try {
       const response = await createPolls(question, options, selectedGroup);
+      console.log(question, options, selectedGroup);
+      console.log(response);
       toast.success(response.data.message || "Quizz enviado com sucesso!");
       resetForm();
     } catch (error: any) {
@@ -106,20 +108,20 @@ export default function CreatePoll() {
               Qual é o seu grupo?
             </label>
             <select
-              id="isProfessor"
-              className={styles.inputSelect}
-              value={selectedGroup}
-              onChange={(e) => setSelectedGroup(e.target.value)}
-              required
-            >
-              <option value="">Selecione</option>
-              {data?.map((group: any) => (
-                <option key={group.id} value={group.id}>
-                  {group.name}
-                </option>
-              )) || null}
+                id="group"
+                className={styles.inputSelect}
+                value={selectedGroup}
+                onChange={(e) => setSelectedGroup(e.target.value)}
+                required
+              >
+                <option value="">Selecione</option>
+                {(data ?? []).map((group: any) => (
+                  <option key={group.id} value={String(group.chat_id)}>
+                    {group.title ?? `Grupo ${group.chat_id}`}
+                  </option>
+                ))}
+              </select>
 
-            </select>
           </div>
 
           <div className="mb-4 mt-3">

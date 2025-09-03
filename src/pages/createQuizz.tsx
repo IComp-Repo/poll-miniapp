@@ -109,12 +109,11 @@ export default function CreateQuizz() {
                             const content = event.target?.result as string;
                             const parsed = JSON.parse(content);
 
-                            if (!parsed.chatId || !parsed.questions || !Array.isArray(parsed.questions)) {
-                                toast.error("Arquivo JSON inválido: falta 'chatId' ou 'questions'.");
+                            if (!parsed.questions || !Array.isArray(parsed.questions)) {
+                                toast.error("Arquivo JSON inválido adicione suas perguntas.");
                                 return;
                             }
 
-                            setSelectedGroup(parsed.chatId);
                             setQuizData(parsed.questions);
 
                             const first = parsed.questions[0];
@@ -138,18 +137,18 @@ export default function CreateQuizz() {
                             Qual é o seu grupo?
                         </label>
                         <select
-                            id="groupSelect"
-                            className={styles.inputSelect}
-                            value={selectedGroup}
-                            onChange={(e) => setSelectedGroup(e.target.value)}
-                            required={quizData.length === 0}
+                        id="group"
+                        className={styles.inputSelect}
+                        value={selectedGroup}
+                        onChange={(e) => setSelectedGroup(e.target.value)}
+                        required
                         >
-                            <option value="">Selecione</option>
-                            {data?.map((group: any) => (
-                                <option key={group.id} value={group.id}>
-                                    {group.name}
-                                </option>
-                            )) || null}
+                        <option value="">Selecione</option>
+                        {(data ?? []).map((group: any) => (
+                            <option key={group.id} value={String(group.chat_id)}>
+                            {group.title ?? `Grupo ${group.chat_id}`}
+                            </option>
+                        ))}
                         </select>
                     </div>
 

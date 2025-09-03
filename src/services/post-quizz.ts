@@ -17,8 +17,8 @@ export async function postQuiz(quizData: Quiz[], selectedGroup: string) {
     const response = await api.post(
       API_ROUTES.POLLS.QUIZZ,
       {
-        group: selectedGroup,
-        quizzes: quizData,
+        chatId: selectedGroup,
+        questions: quizData,
       },
       { headers }
     );
