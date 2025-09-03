@@ -34,29 +34,6 @@ export default function Header({ title, showMenu = true }) {
               <Link href="/dashboard" className={styles.navItem}>Dashboard</Link>
               <Link href="/logout" className={styles.navItem}>Sair</Link>
             </nav>
-
-            {/* Avatar */}
-            <div className={styles.avatar}>
-              {user?.avatar ? (
-                <Image
-                  src={user?.avatar}
-                  alt={user?.name}
-                  width={40}
-                  height={40}
-                  className={styles.avatarImg}
-                  onClick={() => router.push('/menu')}
-                />
-              ) : (
-                <>
-                  <div className={styles.avatarFallback} onClick={() => router.push('/menu')}>
-                    {user?.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div className={styles.labelAvatar} onClick={() => router.push('/menu')}>
-                    {user?.name}
-                  </div>
-                </>
-              )}
-            </div>
           </div>
         )}
       </div>

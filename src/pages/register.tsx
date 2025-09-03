@@ -45,7 +45,7 @@ export default function Register() {
 
 
       if (tokens.access_token) {
-        auth.login(tokens.access_token, user.name, user.email, user.avatar);
+        auth.login(tokens.access_token, user.name, user.email);
         toast.success(message || "Registrado com sucesso!");
         router.push(APP_ROUTES.MENU);
       } else {
