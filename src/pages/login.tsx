@@ -38,7 +38,7 @@ export default function Login() {
       const {tokens, message, user} = response.data;
 
       if (tokens?.access_token) {
-        auth.login(tokens.access_token, user.name, user.email, user.avatar);
+        auth.login(tokens.access_token, user.name, user.email);
         toast.success(message);
         router.push(APP_ROUTES.MENU);
       } else {

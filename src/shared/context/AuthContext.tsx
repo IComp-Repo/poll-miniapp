@@ -6,14 +6,13 @@ type User = {
   email: string;
   name: string;
   roles: string[];
-  avatar?: string;
 };
 
 type AuthContextType = {
   token: string | null;
   user: User | null;
   isAuthenticated: boolean;
-  login: (token: string, name?: string, email?: string, avatar?: string) => Promise<void>;
+  login: (token: string, name?: string, email?: string) => Promise<void>;
   logout: () => void;
 };
 
@@ -55,8 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user_id,
         name: data.name,
         email: data.email,
-        roles: data.roles || [],
-        avatar: data.avatar,
+        roles: data.roles || []
       });
     } catch (err) {
       console.error(err);
