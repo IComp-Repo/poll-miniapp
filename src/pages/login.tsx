@@ -1,4 +1,5 @@
-import { API_ROUTES, APP_ROUTES } from "@/config/routes";
+import NavBack from "@/components/navBack";
+import { APP_ROUTES } from "@/config/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Link from "next/link";
@@ -6,18 +7,13 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { z } from "zod";
 import Header from "../components/Header";
-import api from "../config/axios";
+import { LoginFormData, loginSchema } from "../schemas/loginSchema";
+import { postLogin } from "../services/post-login";
 import { useAuth } from "../shared/context/AuthContext";
+import { EyeIcon, EyeOffIcon } from "../styles/icones";
 import styles from "../styles/useGlobal.module.css";
 
-const loginSchema = z.object({
-  email: z.string().email("Email inválido"),
-  password: z.string().min(8, "Senha deve ter no mínimo 8 caracteres"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,24 +32,24 @@ export default function Login() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      setLoading(true);
-      const response = await api.post(API_ROUTES.AUTH.LOGIN, data);
+      setLoading(true)
+      const response = await postLogin(data);
 
-      const token = response.data.tokens.access_token;
-      const refresh_token = response.data.tokens.refresh_token;
-      if (token) {
-        auth.login(token, refresh_token);
-        toast.success(response.data.message);
+      const {tokens, message, user} = response.data;
+
+      if (tokens?.access_token) {
+        auth.login(tokens.access_token, user.name, user.email, user.avatar);
+        toast.success(message);
         router.push(APP_ROUTES.MENU);
       } else {
         toast.error(response.data.message);
       }
     } catch (error: any) {
-      if (error) {
-        toast.error(error.data.message);
-      } else {
-        toast.error("Ocorreu um erro ao fazer login.");
-      }
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Ocorreu um erro ao fazer login.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -62,7 +58,8 @@ export default function Login() {
   return (
     <>
       <Header title={"Knowledge Check Bot"} showMenu={false} />
-
+      <NavBack/>
+      <h1 className={styles.SubTitle}>Login</h1>
       <div className="container py-5 d-flex flex-column align-items-center">
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -140,45 +137,5 @@ export default function Login() {
         </p>
       </div>
     </>
-  );
-}
-
-function EyeIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      viewBox="0 0 24 24"
-    >
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
-function EyeOffIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      viewBox="0 0 24 24"
-    >
-      <path d="M17.94 17.94A10.12 10.12 0 0 1 12 19.5c-4.58 0-8.53-3.06-10-7.5a10.29 10.29 0 0 1 2.1-3.36" />
-      <path d="M1 1l22 22" />
-      <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
-      <path d="M14.12 14.12a3 3 0 0 1-4.24-4.24" />
-    </svg>
   );
 }

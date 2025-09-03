@@ -5,8 +5,10 @@ import Header from "@/components/Header";
 import styles from '@/styles/useGlobal.module.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Link from "next/link";
+import { useAuth } from "../shared/context/AuthContext";
 
 export default function Menu() {
+    const { user } = useAuth();
     const cards = [
         {
             icon: <Enquete className={styles.icon} />,
@@ -30,23 +32,32 @@ export default function Menu() {
 
     return (
         <>
-            <Header title="Knowledge Check Bot" showMenu={false} />
+            <Header title="Knowledge Check Bot" showMenu={true} />
             <div className="container py-5">
-                <div className="row justify-content-center gap-4">
+                <div className="row justify-content-center g-4">
+                    <h1 className={styles.SubTitle}>Bem-vindo {user?.name}</h1>
                     {cards.map((card, index) => (
-                        <div key={index} className={'col-md-4'}>
-                            <Link href={card.link} className="text-decoration-none" >
-                                <div className={`card text-center h-100 ${styles.cardHover}`} style={{ cursor: "pointer" }}>
+                        <div key={index} className="col-12 col-md-4 d-flex">
+                            <Link
+                                href={card.link}
+                                className="flex-fill text-decoration-none"
+                                aria-label={`Ir para ${card.title}`}
+                            >
+                                <article
+                                    className={`card text-center h-100 ${styles.cardHover}`}
+                                    role="button"
+                                >
                                     <div className="card-body">
                                         <div className="mb-3">{card.icon}</div>
                                         <h5 className={`card-title ${styles.cardTitle}`}>{card.title}</h5>
                                         <p className={`card-text ${styles.cardText}`}>{card.text}</p>
                                     </div>
-                                </div>
+                                </article>
                             </Link>
                         </div>
                     ))}
                 </div>
+
             </div>
         </>
     );

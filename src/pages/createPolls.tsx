@@ -1,5 +1,5 @@
-import api from "@/config/axios";
-import { API_ROUTES } from "@/config/routes";
+import { getGroups } from "@/services/get-groups";
+import { useQuery } from '@tanstack/react-query';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import { useState } from "react";
@@ -9,17 +9,24 @@ import iconPlus from "../assets/icon.png";
 import Header from "../components/Header";
 import EnqueteOption from "../components/enqueteOption";
 import Navbar from "../components/navBack";
-import grupos from "../params/grupos.json";
+import { createPolls } from "../services/post-enquete";
 import styles from "../styles/useGlobal.module.css";
 
-export default function createPoll() {
+export default function CreatePoll() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const [selectedGroup, setSelectedGroup] = useState("");
   const [loading, setLoading] = useState(false);
 
 
-  const handleOptionChange = (index: any, value: any) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['groups'],
+    queryFn: getGroups,
+    staleTime: 1000 * 60,
+  });
+
+
+  const handleOptionChange = (index: number, value: string) => {
     const newOptions = [...options];
     newOptions[index] = value;
     setOptions(newOptions);
@@ -27,7 +34,7 @@ export default function createPoll() {
 
   const addOption = () => setOptions([...options, ""]);
 
-  const removeOption = (index: any) => {
+  const removeOption = (index: number) => {
     if (options.length > 2) {
       const newOptions = options.filter((_, i) => i !== index);
       setOptions(newOptions);
@@ -40,7 +47,7 @@ export default function createPoll() {
     setSelectedGroup("");
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (options.length < 2) {
@@ -53,25 +60,34 @@ export default function createPoll() {
       return;
     }
 
+    if (!question.trim()) {
+      toast.warn("A pergunta não pode estar vazia.");
+      return;
+    }
+
+    if (new Set(options.map(opt => opt.trim())).size !== options.length) {
+      toast.warn("As opções não podem se repetir.");
+      return;
+    }
+    if (!selectedGroup) {
+      toast.warn("Selecione um grupo.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await api.post(API_ROUTES.POLLS.CREATE, {
-        question,
-        options,
-        chatId: selectedGroup,
-      }, {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
-      });
+      const response = await createPolls(question, options, selectedGroup);
       toast.success(response.data.message || "Quizz enviado com sucesso!");
       resetForm();
     } catch (error: any) {
-      toast.error((error.data.message) || "Erro ao criar enquete!");
-    } finally {
-      setLoading(false);
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Erro ao criar enquete!";
+      toast.error(message);
     }
+    setLoading(false);
   };
 
   return (
@@ -97,14 +113,15 @@ export default function createPoll() {
               required
             >
               <option value="">Selecione</option>
-              {grupos.map((group) => (
+              {data?.map((group: any) => (
                 <option key={group.id} value={group.id}>
                   {group.name}
                 </option>
-              ))}
+              )) || null}
+
             </select>
           </div>
-              
+
           <div className="mb-4 mt-3">
             <label htmlFor="isProfessor" className={styles.label}>
               Qual é a sua pergunta?
@@ -139,8 +156,16 @@ export default function createPoll() {
               Opção
             </button>
             <button className={styles.submitPoll} type="submit" disabled={loading}>
-              {loading ? "Enviando..." : "Enviar"}
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2"></span>
+                  Enviando...
+                </>
+              ) : (
+                "Enviar"
+              )}
             </button>
+
           </div>
         </form >
 

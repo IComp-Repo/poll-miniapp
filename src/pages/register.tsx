@@ -1,5 +1,8 @@
-import { API_ROUTES, APP_ROUTES } from "@/config/routes";
+import NavBack from "@/components/navBack";
+import { APP_ROUTES } from "@/config/routes";
 import { baseRegisterSchema, RegisterSchemaInput } from "@/schemas/registerSchema";
+import { postLinkTelegram } from "@/services/post-link-telegram";
+import { postRegister } from "@/services/post-register";
 import { useAuth } from "@/shared/context/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,47 +12,51 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import Header from "../components/Header";
-import api from "../config/axios";
 import styles from "../styles/useGlobal.module.css";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const auth = useAuth();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterSchemaInput>({
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterSchemaInput>({
     resolver: zodResolver(baseRegisterSchema),
     mode: "onTouched",
   });
 
-
   const onSubmit = async (data: RegisterSchemaInput) => {
-
-    const formattedData = {
-      ...data,
-      is_professor: String(data.is_professor) === "true" ? true : false,
-    };
-
     try {
       setLoading(true);
-      const response = await api.post(API_ROUTES.AUTH.REGISTER, formattedData);
+      const response = await postRegister(data);
+      const { tokens, message, user } = response.data;
+      try {
+        const telegramUser = await postLinkTelegram(tokens.access_token);
 
-      const token = response.data.tokens.access_token;
-      const refresh_token = response.data.tokens.refresh_token;
-      if (token) {
-        auth.login(token, refresh_token);
-        toast.success("Cadastro realizado com sucesso!");
-        router.push(APP_ROUTES.LOGIN);
+        if (telegramUser?.deep_link) {
+          window.open(telegramUser.deep_link, "_blank"); // abre em nova aba
+        } else {
+          console.error("Deep link não retornado pelo servidor");
+        }
+      } catch (err) {
+        console.error("Erro ao vincular Telegram:", err);
+      }
+
+
+      if (tokens.access_token) {
+        auth.login(tokens.access_token, user.name, user.email, user.avatar);
+        toast.success(message || "Registrado com sucesso!");
+        router.push(APP_ROUTES.MENU);
       } else {
-        toast.error("Token não encontrado na resposta.");
+        toast.error("Erro ao registrar usuário");
       }
     } catch (error: any) {
-      toast.error(error.data.message);
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Ocorreu um erro ao registrar o usuário.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -57,10 +64,10 @@ export default function Register() {
 
   return (
     <>
-      <Header title={'Knowledge Check Bot'} showMenu={false} />
-
+      <Header title="Knowledge Check Bot" showMenu={false} />
+      <NavBack />
+      <h1 className={styles.SubTitle}>Criar Conta</h1>
       <div className="container py-5 d-flex flex-column align-items-center" color="#F8F9FA">
-
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-100"
@@ -68,35 +75,42 @@ export default function Register() {
         >
           <div className="mb-3">
             <input
+              type="text"
+              placeholder="Seu Nome"
+              className={styles.input}
+              {...register("name")}
+              aria-invalid={errors.name ? "true" : "false"}
+            />
+            {errors.name && <p className="text-danger mt-1">{errors.name.message}</p>}
+          </div>
+          <div className="mb-3">
+            <input
               type="email"
               placeholder="Email"
               className={styles.input}
               {...register("email")}
+              aria-invalid={errors.email ? "true" : "false"}
             />
-
-            {errors.email && (
-              <p className="text-danger mt-1">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-danger mt-1">{errors.email.message}</p>}
           </div>
-          <div className="mb-3" style={{ position: "relative", width: "100%" }}>
 
+          <div className="mb-3 position-relative">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Senha"
               className={styles.input}
               {...register("password")}
+              aria-invalid={errors.password ? "true" : "false"}
             />
-            {errors.password && (
-              <p className="text-danger mt-1">{errors.password.message}</p>
-            )}
+            {errors.password && <p className="text-danger mt-1">{errors.password.message}</p>}
 
             <button
-              onClick={() => setShowPassword(!showPassword)}
               type="button"
+              onClick={() => setShowPassword(!showPassword)}
               style={{
                 position: "absolute",
                 right: "8px",
-                top: "10%",
+                top: "50%",
                 transform: "translateY(-50%)",
                 background: "transparent",
                 border: "none",
@@ -106,99 +120,93 @@ export default function Register() {
               aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}
             >
               {showPassword ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  viewBox="0 0 24 24"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                   <path d="M17.94 17.94A10.12 10.12 0 0 1 12 19.5c-4.58 0-8.53-3.06-10-7.5a10.29 10.29 0 0 1 2.1-3.36" />
                   <path d="M1 1l22 22" />
                   <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
                   <path d="M14.12 14.12a3 3 0 0 1-4.24-4.24" />
                 </svg>
               ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  viewBox="0 0 24 24"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                   <circle cx="12" cy="12" r="3" />
                 </svg>
               )}
             </button>
-            <div className="mb-3 mt-3">
-              <input
-                type="text"
-                placeholder="Sua Matricula UFAM"
-                className={styles.input}
-                {...register("register")}
-                onChange={(e) => {
-                  const onlyNums = e.target.value.replace(/\D/g, "");
-                  e.target.value = onlyNums;
-                }}
-              />
-
-            </div>
-            <div className="mb-3 mt-3">
-              <label htmlFor="isProfessor" className={styles.label}>
-                Você é professor?
-              </label>
-              <select
-                id="isProfessor"
-                className={styles.inputSelect}
-                {...register("is_professor")}
-              >
-                <option value="">Selecione</option>
-                <option value="true">Sim</option>
-                <option value="false">Não</option>
-              </select>
-              {errors.is_professor && (
-                <p className="text-danger mt-1">{errors.is_professor.message}</p>
-              )}
-            </div>
           </div>
 
-          <button className={styles.submit} type="submit" disabled={loading}>
+          <div className="mb-3 position-relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirmar Senha"
+              {...register("confirmPassword")}
+              className={styles.input}
+            />
+
+            {errors.confirmPassword && <p className="text-danger mt-1">{errors.confirmPassword.message}</p>}
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowConfirmPassword(!showConfirmPassword);
+              }}
+              style={{
+                position: "absolute",
+                right: "8px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                paddingRight: "12px",
+                zIndex: 2,
+              }}
+              aria-label={showConfirmPassword ? "Esconder senha" : "Mostrar senha"}
+            >
+              {showConfirmPassword ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <path d="M17.94 17.94A10.12 10.12 0 0 1 12 19.5c-4.58 0-8.53-3.06-10-7.5a10.29 10.29 0 0 1 2.1-3.36" />
+                  <path d="M1 1l22 22" />
+                  <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
+                  <path d="M14.12 14.12a3 3 0 0 1-4.24-4.24" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+
+          </div>
+
+          <button
+            className={styles.submit}
+            type="submit"
+            disabled={loading}
+          >
             {loading ? (
               <>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                 Carregando...
               </>
             ) : (
               "Cadastrar-se"
             )}
           </button>
-          {errors.root && (
-            <p className="text-danger mt-1">{errors.root.message}</p>
-          )}
+
+          {errors.root && <p className="text-danger mt-1">{errors.root.message}</p>}
         </form>
 
         <ToastContainer position="top-right" autoClose={3000} />
+
         <p className="mt-3">
           Já tem conta?{" "}
-          <Link href="/login"
-            className={styles.registerButton}>
+          <Link href="/login" className={styles.registerButton}>
             Fazer login
           </Link>
         </p>
-
       </div>
     </>
   );

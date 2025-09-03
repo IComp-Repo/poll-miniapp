@@ -1,7 +1,6 @@
 import FileUploader from "@/components/FileUpload";
-import api from "@/config/axios";
-import { API_ROUTES } from "@/config/routes";
-import grupos from "@/params/grupos.json";
+import { postQuiz } from "@/services/post-quizz";
+import { useQuery } from '@tanstack/react-query';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import { useState } from "react";
@@ -12,16 +11,24 @@ import AgendamentoModal from "../components/AgendamentoModal";
 import Header from "../components/Header";
 import Navbar from "../components/navBack";
 import QuizOption from "../components/quizOption";
+import { Quiz } from "../schemas/interfaceQuizz";
+import { getGroups } from "../services/get-groups";
 import styles from "../styles/useGlobal.module.css";
 
-export default function createQuizz() {
+export default function CreateQuizz() {
     const [question, setQuestion] = useState("");
     const [options, setOptions] = useState(["", ""]);
     const [selectedGroup, setSelectedGroup] = useState("");
     const [correctOption, setCorrectOption] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
-    const [quizData, setQuizData] = useState<any[]>([]);
+    const [quizData, setQuizData] = useState<Quiz[]>([]);
     const [showModal, setShowModal] = useState(false);
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['groups'],
+        queryFn: getGroups,
+        staleTime: 1000 * 60,
+    });
 
     const handleOptionChange = (index: number, value: string) => {
         const newOptions = [...options];
@@ -41,7 +48,6 @@ export default function createQuizz() {
     const resetForm = () => {
         setQuestion("");
         setOptions(["", ""]);
-        setSelectedGroup("");
         setQuizData([]);
         setCorrectOption(null);
     };
@@ -50,49 +56,45 @@ export default function createQuizz() {
         setLoading(true);
 
         try {
-            const headers = {
-                Authorization: `Bearer ${sessionStorage.getItem("refresh_token")}`,
-            };
-
-            const questionObj = {
-                question,
-                options,
-                correctOption,
-            };
-
-            if (quizData.length === 0) {
-                if (options.length < 2 || correctOption === null || options.some((opt) => opt.trim() === "")) {
-                    toast.warn("Complete corretamente as opções e a pergunta");
-                    return;
-                }
+            if (!selectedGroup) {
+                toast.warn("Selecione um grupo.");
+                return;
+            }
+            if (question.trim() === "") {
+                toast.warn("Digite a pergunta.");
+                return;
+            }
+            if (options.length < 2 || options.some((opt) => opt.trim() === "")) {
+                toast.warn("Preencha ao menos duas opções válidas.");
+                return;
+            }
+            if (correctOption === null || correctOption < 0 || correctOption >= options.length) {
+                toast.warn("Selecione a opção correta.");
+                return;
             }
 
-            const formate = dataHora?.split('T') || [];
-            let payload;
-            if (dataHora != null) {
-                payload = {
-                    chatId: selectedGroup,
-                    questions: quizData.length > 0 ? quizData : [questionObj],
-                    schedule_date: formate[0] || "",
-                    schedule_time: formate[1] || ""
-                };
-            } else {
-                payload = {
-                    chatId: selectedGroup,
-                    questions: quizData.length > 0 ? quizData : [questionObj],
-                };
-            }
+            const questionObj = { question, options, correctOption };
 
-            const response = await api.post(API_ROUTES.POLLS.QUIZZ, payload, { headers });
+            const [schedule_date, schedule_time] = dataHora ? dataHora.split("T") : ["", ""];
 
-            toast.success(response.data.message);
+            const payload = {
+                chatId: selectedGroup,
+                questions: quizData.length > 0 ? quizData : [questionObj],
+                schedule_date,
+                schedule_time,
+            };
+
+            await postQuiz(payload.questions, payload.chatId);
+
+            toast.success("Quizz criado com sucesso!");
             resetForm();
         } catch (error: any) {
-            toast.error(error.data.message);
+            toast.error(error.response?.data?.message || "Erro ao criar o quizz.");
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <>
@@ -143,11 +145,11 @@ export default function createQuizz() {
                             required={quizData.length === 0}
                         >
                             <option value="">Selecione</option>
-                            {grupos.map((group) => (
+                            {data?.map((group: any) => (
                                 <option key={group.id} value={group.id}>
                                     {group.name}
                                 </option>
-                            ))}
+                            )) || null}
                         </select>
                     </div>
 

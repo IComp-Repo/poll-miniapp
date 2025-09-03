@@ -2,98 +2,112 @@ import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
-    user_id: number;
-    email: string;
-    roles: string[];
-}
+  user_id: number;
+  email: string;
+  name: string;
+  roles: string[];
+  avatar?: string;
+};
 
 type AuthContextType = {
-    token: string | null;
-    user: User | null;
-    isAuthenticated: boolean;
-    login: (token: string, refresh_token: string) => void;
-    logout: () => void;
-}
+  token: string | null;
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (token: string, name?: string, email?: string, avatar?: string) => Promise<void>;
+  logout: () => void;
+};
 
-const AuthContext = createContext<AuthContextType | null>(null)
+const AuthContext = createContext<AuthContextType | null>(null);
 
-const decodeToken = (token: string): User | null => {
-    try {
-        return jwtDecode<User>(token);
-    } catch {
-        return null;
-    }
+const decodeToken = (token: string): { user_id: number } | null => {
+  try {
+    return jwtDecode<{ user_id: number }>(token);
+  } catch {
+    return null;
+  }
 };
 
 const isTokenExpired = (token: string): boolean => {
-    try {
-        const { exp } = jwtDecode<{ exp: number }>(token);
-        return exp * 1000 < Date.now();
-    } catch {
-        return true;
-    }
+  try {
+    const { exp } = jwtDecode<{ exp: number }>(token);
+    return exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [token, setToken] = useState<string | null>(null);
-    const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        const storedToken = sessionStorage.getItem("token");
-        if (storedToken && !isTokenExpired(storedToken)) {
-            setToken(storedToken);
-            const decoded = decodeToken(storedToken);
-            if (decoded) setUser(decoded);
-        } else {
-            const storedRefreshToken = sessionStorage.getItem("refresh_token");
-            if (storedRefreshToken) {
-                setToken(storedRefreshToken);
-                const decoded = decodeToken(storedRefreshToken);
-                if (decoded) setUser(decoded);
-            } else {
-                logout();
-            }
-        }
-    }, []);
+  const fetchUserData = async (user_id: number, newToken: string) => {
+    try {
+      const res = await fetch(`/api/users/${user_id}`, {
+        headers: {
+          Authorization: `Bearer ${newToken}`,
+        },
+      });
 
-    const login = (newToken: string, refresh_token: string) => {
-        sessionStorage.setItem("token", newToken);
-        sessionStorage.setItem("refresh_token", refresh_token);
-        setToken(newToken);
-        const decoded = decodeToken(newToken);
-        if (decoded) {
-            setUser(decoded);
-        }
-    };
+      if (!res.ok) throw new Error("Erro ao buscar usuário");
+      const data = await res.json();
 
-    const logout = () => {
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("refresh_token");
-        setToken(null);
-        setUser(null);
-    };
+      setUser({
+        user_id,
+        name: data.name,
+        email: data.email,
+        roles: data.roles || [],
+        avatar: data.avatar,
+      });
+    } catch (err) {
+      console.error(err);
+      setUser({ user_id, name: "Usuário", email: "", roles: [] });
+    }
+  };
 
-    useEffect(() => {
-        if (token) {
-            if (isTokenExpired(token)) {
-                logout();
-            } else {
-                const decoded = decodeToken(token);
-                if (decoded) setUser(decoded);
-                else logout();
-            }
-        }
-    }, [token]);
+  const login = async (newToken: string) => {
+    sessionStorage.setItem("token", newToken);
+    setToken(newToken);
 
-    return (
-        <AuthContext.Provider value={{ token, user, isAuthenticated: !!token, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    const decoded = decodeToken(newToken);
+    if (decoded?.user_id) {
+      await fetchUserData(decoded.user_id, newToken);
+    }
+  };
+
+  const logout = () => {
+    sessionStorage.removeItem("token");
+    setToken(null);
+    setUser(null);
+  };
+
+  useEffect(() => {
+    const storedToken = sessionStorage.getItem("token");
+    if (storedToken && !isTokenExpired(storedToken)) {
+      setToken(storedToken);
+      const decoded = decodeToken(storedToken);
+      if (decoded?.user_id) {
+        fetchUserData(decoded.user_id, storedToken);
+      }
+    } else {
+      logout();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token && isTokenExpired(token)) {
+      logout();
+    }
+  }, [token]);
+
+  return (
+    <AuthContext.Provider value={{ token, user, isAuthenticated: !!token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) throw new Error("useAuth deve ser usado dentro de <AuthProvider>");
-    return context;
-}
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth deve ser usado dentro de <AuthProvider>");
+  return context;
+};
