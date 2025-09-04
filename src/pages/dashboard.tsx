@@ -1,4 +1,6 @@
+import CalculoIcon from "@/assets/calculator-simple.png";
 import CerebroIcon from "@/assets/cerebro-interrogacao.svg";
+import AnswerIcon from "@/assets/comments-question.png";
 import EnqueteIcon from "@/assets/enquete-dashboard.svg";
 import UsersIcon from "@/assets/usuarios.svg";
 import GraficoReposta from "@/components/GraficoResposta";
@@ -6,24 +8,44 @@ import Header from "@/components/Header";
 import NavBack from "@/components/navBack";
 import StatCard from "@/components/StatCard";
 import UltimasAtividades from "@/components/UltimasAtividades";
-import styles from "@/styles/useGlobal.module.css";
-import { useEffect, useMemo, useState } from "react";
 import {
     getDashboardSummary,
     getLastActivities,
     getResponsesPerDay,
-    type DashboardSummary,
     type ActivityItem,
+    type DashboardSummary,
     type ResponsesPerDayItem,
 } from "@/services/dashboard";
+import styles from "@/styles/useGlobal.module.css";
+import Image from "next/image";
+import { JSX, useEffect, useMemo, useState } from "react";
 
 const TZ = "America/Manaus";
+
+type CardTitle =
+    | "Total Quizzes"
+    | "Total Questões"
+    | "Participantes"
+    | "Total Respostas"
+    | "Acurácia média";
 
 export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [summary, setSummary] = useState<DashboardSummary | null>(null);
     const [activities, setActivities] = useState<ActivityItem[]>([]);
     const [perDay, setPerDay] = useState<ResponsesPerDayItem[]>([]);
+
+    const iconMap: Record<CardTitle, JSX.Element> = {
+        "Total Quizzes": <CerebroIcon width={32} height={32} />,
+        "Total Questões": <EnqueteIcon width={32} height={32} />,
+        "Participantes": <UsersIcon width={32} height={32} />,
+        "Total Respostas": (
+            <Image src={AnswerIcon} width={32} height={32} alt="Total Respostas" />
+        ),
+        "Acurácia média": (
+            <Image src={CalculoIcon} width={32} height={32} alt="Acurácia Média" />
+        ),
+    };
 
     useEffect(() => {
         let alive = true;
@@ -39,25 +61,18 @@ export default function Dashboard() {
             if (!alive) return;
 
             if (results[0].status === "fulfilled") {
-                console.log("[dashboard] summary ->", results[0].value);
                 setSummary(results[0].value);
-            } else {
-                console.warn("[dashboard] summary erro:", results[0].reason);
             }
 
             if (results[1].status === "fulfilled") {
-                console.log("[dashboard] activities ->", results[1].value);
                 setActivities(results[1].value ?? []);
             } else {
-                console.warn("[dashboard] activities erro:", results[1].reason);
                 setActivities([]);
             }
 
             if (results[2].status === "fulfilled") {
-                console.log("[dashboard] perDay ->", results[2].value);
                 setPerDay(results[2].value ?? []);
             } else {
-                console.warn("[dashboard] perDay erro:", results[2].reason);
                 setPerDay([]);
             }
 
@@ -69,7 +84,7 @@ export default function Dashboard() {
         };
     }, []);
 
-    const cards = useMemo(() => {
+    const cards: { title: CardTitle; value: string | number }[] = useMemo(() => {
         if (!summary) return [];
         return [
             { title: "Total Quizzes", value: summary.total_quizzes },
@@ -109,51 +124,45 @@ export default function Dashboard() {
             <NavBack />
             <h1 className={styles.SubTitle}>Dashboard de Atividades</h1>
 
-            {loading && (
-                <div className="container mt-3">
-                    <div className="alert alert-secondary" role="alert">
-                        Carregando dados do dashboard…
+            {loading ? (
+                <div className="container mt-3 text-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Carregando...</span>
                     </div>
                 </div>
+            ) : (
+                <>
+                    <div className="container mt-4 d-flex justify-content-between gap-4 ">
+                        {cards.map((item, index) => (
+                            <StatCard
+                                key={index}
+                                title={item.title}
+                                value={item.value}
+                                icon={iconMap[item.title]}
+                            />
+                        ))}
+                    </div>
+
+                    <div className="container mt-4 d-flex justify-content-center">
+                        <GraficoReposta
+                            title="Respostas por dia"
+                            data={graficoData}
+                            xAxisKey="dia"
+                            yAxisKey="respostas"
+                        />
+                    </div>
+
+                    <div className="container d-flex ">
+                        <h3 style={{ color: "#003366", marginTop: "10px" }}>
+                            Últimas Atividades
+                        </h3>
+                    </div>
+
+                    <div className="container d-flex justify-content-center">
+                        <UltimasAtividades data={dadosAtividades} />
+                    </div>
+                </>
             )}
-
-            <div className="container mt-4 d-flex justify-content-between gap-4 ">
-                {cards.map((item, index) => (
-                    <StatCard
-                        key={index}
-                        title={item.title}
-                        value={item.value}
-                        icon={
-                            item.title === "Total Enquetes" ? (
-                                <EnqueteIcon width={32} height={32} />
-                            ) : item.title === "Total Quizzes" ? (
-                                <CerebroIcon width={32} height={32} />
-                            ) : (
-                                <UsersIcon width={32} height={32} />
-                            )
-                        }
-                    />
-                ))}
-            </div>
-
-            <div className="container mt-4 d-flex justify-content-center">
-                <GraficoReposta
-                    title="Respostas por dia"
-                    data={graficoData}
-                    xAxisKey="dia"
-                    yAxisKey="respostas"
-                />
-            </div>
-
-            <div className="container d-flex ">
-                <h3 style={{ color: "#003366", marginTop: "10px" }}>
-                    Últimas Atividades
-                </h3>
-            </div>
-
-            <div className="container d-flex justify-content-center">
-                <UltimasAtividades data={dadosAtividades} />
-            </div>
         </>
     );
 }
