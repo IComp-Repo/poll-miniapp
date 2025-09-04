@@ -444,3 +444,72 @@
   cursor: pointer;
 }
 
+@media (max-width: 800px) {
+  .headerContent {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navMenu {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rightContent {
+    margin-top: 10px;
+  }
+
+  .logoTitle {
+    margin-left: 0;
+    gap: 6px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+  .SubTitle {
+    font-size: 1.5rem;
+  }
+
+  .logoutButton {
+    top: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  .buttonAction {
+    font-size: 12px;
+    padding: 4px 8px;
+    height: 28px;
+  }
+
+  .inputSelect {
+    padding-right: 1.5rem;
+    background-position: right 0.5rem center;
+    background-size: 0.75rem auto;
+  }
+
+  .submitPoll, .opcao {
+    width: 200px;
+    height: 35px;
+    font-size: 14px;
+  }
+
+  .cardHover {
+    padding: 10px;
+  }
+
+  .cardTitle {
+    font-size: 1rem;
+  }
+
+  .cardText {
+    font-size: 0.875rem;
+  }
+
+  .footer {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+}

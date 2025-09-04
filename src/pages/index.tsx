@@ -61,7 +61,7 @@ export default function IndexPage() {
           </div>
           {/* Imagem ilustrativa */}
           <div className="flex-grow-1 d-flex justify-content-center">
-            <Image src={Ilustracao} alt="Ilustração" width={500} height={500} style={{marginLeft: '10rem'}} />
+            <Image src={Ilustracao} alt="Ilustração" className='ilustracaoImg' width={500} height={500} style={{marginLeft: '10rem'}} />
           </div>
         </div>
       </div>
