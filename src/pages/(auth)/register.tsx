@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Header from "../components/Header";
 import styles from "../styles/useGlobal.module.css";
 
@@ -198,8 +198,6 @@ export default function Register() {
 
           {errors.root && <p className="text-danger mt-1">{errors.root.message}</p>}
         </form>
-
-        <ToastContainer position="top-right" autoClose={3000} />
 
         <p className="mt-3">
           Já tem conta?{" "}

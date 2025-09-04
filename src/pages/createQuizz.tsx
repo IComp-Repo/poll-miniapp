@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import iconPlus from "../assets/icon.png";
 import AgendamentoModal from "../components/AgendamentoModal";
@@ -204,7 +204,6 @@ export default function CreateQuizz() {
                         }}
                     />
                 </form>
-                <ToastContainer position="top-right" autoClose={3000} />
             </div>
         </>
     );

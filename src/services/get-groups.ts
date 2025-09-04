@@ -1,4 +1,5 @@
 import api from '@/config/axios';
+import { API_ROUTES } from '@/config/routes';
 import { toast } from 'react-toastify';
 
 export async function getGroups() {
@@ -9,7 +10,7 @@ export async function getGroups() {
       return [];
     }
 
-    const { data } = await api.get('/api/user-groups/', {
+    const { data } = await api.get(API_ROUTES.GROUPS.SHOW, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

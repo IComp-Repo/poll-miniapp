@@ -415,3 +415,32 @@
   transition: background-color 0.3s ease;
 }
 
+.footer {
+  background-color: #e05800;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  margin-top: 20px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+
+.paragraph {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.link {
+  color: #E05F00;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
