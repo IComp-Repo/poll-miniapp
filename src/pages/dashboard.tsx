@@ -114,6 +114,8 @@ export default function Dashboard() {
                 type: "Quiz",
                 date: new Date(a.created_at).toLocaleString("pt-BR", { timeZone: TZ }),
                 answers: a.answers,
+                correct: a.correct_answers,
+                wrong: a.incorrect_answers,
             })),
         [activities]
     );
@@ -124,8 +126,11 @@ export default function Dashboard() {
             <NavBack />
             <h1 className={styles.SubTitle}>Dashboard de Atividades</h1>
 
-            {loading ? (
-                <div className="container mt-3 text-center">
+            {(loading ? (
+                <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: '100vh' }}
+                >
                     <div className="spinner-border text-primary" role="status">
                         <span className="visually-hidden">Carregando...</span>
                     </div>
@@ -162,7 +167,7 @@ export default function Dashboard() {
                         <UltimasAtividades data={dadosAtividades} />
                     </div>
                 </>
-            )}
+            ))}
         </>
     );
 }

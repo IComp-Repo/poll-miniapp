@@ -7,6 +7,7 @@ export type DashboardSummary = {
     total_answers: number;
     participants: number;
     accuracy: number;
+
 };
 
 export type ActivityItem = {
@@ -14,6 +15,8 @@ export type ActivityItem = {
     question: string;
     created_at: string;
     answers: number;
+    correct_answers: number;
+    incorrect_answers: number;
 };
 
 export type ResponsesPerDayItem = {
@@ -122,22 +125,22 @@ export async function getResponsesPerDay(days = 7) {
 }
 
 export async function getQuestionStats(questionId: number) {
-  try {
-    const headers = getAuthHeader();
-    if (!headers) return null;
+    try {
+        const headers = getAuthHeader();
+        if (!headers) return null;
 
-    const { data } = await api.get(
-      `/api/dashboard/quiz/questions/${questionId}/stats/`,
-      { headers }
-    );
+        const { data } = await api.get(
+            `/api/dashboard/quiz/questions/${questionId}/stats/`,
+            { headers }
+        );
 
-    return unwrap<QuestionStats>(data) ?? null;
-  } catch (error: any) {
-    const message =
-      error?.response?.data?.message ||
-      error?.message ||
-      'Erro ao buscar estatísticas da questão!';
-    toast.error(message);
-    return null;
-  }
+        return unwrap<QuestionStats>(data) ?? null;
+    } catch (error: any) {
+        const message =
+            error?.response?.data?.message ||
+            error?.message ||
+            'Erro ao buscar estatísticas da questão!';
+        toast.error(message);
+        return null;
+    }
 }
