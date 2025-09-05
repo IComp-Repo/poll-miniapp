@@ -97,28 +97,44 @@ export default function Dashboard() {
 
     const graficoData = useMemo(
         () =>
-            (perDay ?? []).map((d) => ({
-                dia: new Date(`${d.day}T00:00:00Z`).toLocaleDateString("pt-BR", {
-                    timeZone: TZ,
-                }),
-                respostas: d.responses,
-            })),
+            (perDay ?? []).map((d) => {
+                const parts = d.day.split("-");
+                const fixedDate = new Date(
+                    Number(parts[0]),      
+                    Number(parts[1]) - 1,  
+                    Number(parts[2])      
+                );
+
+                return {
+                    dia: fixedDate.toLocaleDateString("pt-BR", { timeZone: TZ }),
+                    respostas: d.responses,
+                };
+            }),
         [perDay]
     );
 
+    
+
+
+
     const dadosAtividades = useMemo(
         () =>
-            (activities ?? []).map((a) => ({
-                id: a.question_id,
-                title: a.question,
-                type: "Quiz",
-                date: new Date(a.created_at).toLocaleString("pt-BR", { timeZone: TZ }),
-                answers: a.answers,
-                correct: a.correct_answers,
-                wrong: a.incorrect_answers,
-            })),
+            (activities ?? []).map((a) => {
+
+                const fixedDate = new Date(a.created_at);
+                return {
+                    id: a.question_id,
+                    title: a.question,
+                    type: "Quiz",
+                    date: fixedDate.toLocaleString("pt-BR", { timeZone: TZ }),
+                    answers: a.answers,
+                    correct: a.correct_answers,
+                    wrong: a.incorrect_answers,
+                };
+            }),
         [activities]
     );
+
 
     return (
         <>
