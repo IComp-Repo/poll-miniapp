@@ -7,7 +7,6 @@ export type DashboardSummary = {
     total_answers: number;
     participants: number;
     accuracy: number;
-
 };
 
 export type ActivityItem = {
@@ -57,9 +56,20 @@ function getAuthHeader() {
     return { Authorization: `Bearer ${token}` };
 }
 
-/** Extrai payload aceitando {data: X} ou X */
-function unwrap<T>(raw: any): T {
-    return (raw?.data ?? raw) as T;
+function unwrap<T>(raw: unknown): T {
+    if (raw && typeof raw === 'object' && 'data' in (raw as any)) {
+        return (raw as any).data as T;
+    }
+    return raw as T;
+}
+
+function handleApiError<T>(error: any, fallback: string, emptyValue: T): T {
+    const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        fallback;
+    toast.error(message);
+    return emptyValue;
 }
 
 export async function getDashboardSummary() {
@@ -68,16 +78,9 @@ export async function getDashboardSummary() {
         if (!headers) return null;
 
         const { data } = await api.get('/api/dashboard/quiz/summary/', { headers });
-
-        console.log('[service] summary raw:', data);
         return unwrap<DashboardSummary>(data) ?? null;
-    } catch (error: any) {
-        const message =
-            error?.response?.data?.message ||
-            error?.message ||
-            'Erro ao buscar resumo do dashboard!';
-        toast.error(message);
-        return null;
+    } catch (error) {
+        return handleApiError(error, 'Erro ao buscar resumo do dashboard!', null);
     }
 }
 
@@ -91,13 +94,8 @@ export async function getLastActivities() {
         const payload = unwrap<ActivityItem[] | { data: ActivityItem[] }>(data);
         const list = Array.isArray(payload) ? payload : (payload as any)?.data;
         return Array.isArray(list) ? list : [];
-    } catch (error: any) {
-        const message =
-            error?.response?.data?.message ||
-            error?.message ||
-            'Erro ao buscar últimas atividades!';
-        toast.error(message);
-        return [];
+    } catch (error) {
+        return handleApiError(error, 'Erro ao buscar últimas atividades!', []);
     }
 }
 
@@ -114,13 +112,8 @@ export async function getResponsesPerDay(days = 7) {
         const payload = unwrap<ResponsesPerDayItem[] | { data: ResponsesPerDayItem[] }>(data);
         const list = Array.isArray(payload) ? payload : (payload as any)?.data;
         return Array.isArray(list) ? list : [];
-    } catch (error: any) {
-        const message =
-            error?.response?.data?.message ||
-            error?.message ||
-            'Erro ao buscar respostas por dia!';
-        toast.error(message);
-        return [];
+    } catch (error) {
+        return handleApiError(error, 'Erro ao buscar respostas por dia!', []);
     }
 }
 
@@ -135,12 +128,7 @@ export async function getQuestionStats(questionId: number) {
         );
 
         return unwrap<QuestionStats>(data) ?? null;
-    } catch (error: any) {
-        const message =
-            error?.response?.data?.message ||
-            error?.message ||
-            'Erro ao buscar estatísticas da questão!';
-        toast.error(message);
-        return null;
+    } catch (error) {
+        return handleApiError(error, 'Erro ao buscar estatísticas da questão!', null);
     }
 }
