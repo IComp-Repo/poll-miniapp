@@ -1,18 +1,12 @@
 import api from '@/config/axios';
-import { API_ROUTES, APP_ROUTES } from '@/config/routes';
-import { useAuth } from '@/shared/context/AuthContext';
-import { useRouter } from 'next/router';
+import { API_ROUTES } from '@/config/routes';
 import { toast } from 'react-toastify';
 
 export async function getGroups() {
-  const auth = useAuth();
-  const router = useRouter();
   try {
     const token = sessionStorage.getItem('token');
     if (!token) {
       toast.error("Usuário não autenticado.");
-      auth.logout();
-      router.push(APP_ROUTES.PRINCIPAL);
       return [];
     }
 
