@@ -52,103 +52,125 @@ export default function CreateQuizz() {
         setCorrectOption(null);
     };
 
+    function splitDateTimeLocal(datetimeLocal: string | null): {
+        schedule_date: string | null;
+        schedule_time: string | null;
+    } {
+        if (!datetimeLocal) return { schedule_date: null, schedule_time: null };
+        const [date, time] = datetimeLocal.split("T");
+        if (!date || !time) return { schedule_date: null, schedule_time: null };
+        const hhmm = time.slice(0, 5);
+        return { schedule_date: date, schedule_time: hhmm };
+    }
+
     const handleSubmitComAgendamento = async (dataHora: string | null) => {
+        if (!selectedGroup) {
+            toast.warn("Selecione um grupo.");
+            return;
+        }
+        if (question.trim() === "") {
+            toast.warn("Digite a pergunta.");
+            return;
+        }
+        if (options.length < 2 || options.some((opt) => opt.trim() === "")) {
+            toast.warn("Preencha ao menos duas opções válidas.");
+            return;
+        }
+        if (
+            correctOption === null ||
+            correctOption < 0 ||
+            correctOption >= options.length
+        ) {
+            toast.warn("Selecione a opção correta.");
+            return;
+        }
+
         setLoading(true);
-
         try {
-            if (!selectedGroup) {
-                toast.warn("Selecione um grupo.");
-                return;
-            }
-            if (question.trim() === "") {
-                toast.warn("Digite a pergunta.");
-                return;
-            }
-            if (options.length < 2 || options.some((opt) => opt.trim() === "")) {
-                toast.warn("Preencha ao menos duas opções válidas.");
-                return;
-            }
-            if (correctOption === null || correctOption < 0 || correctOption >= options.length) {
-                toast.warn("Selecione a opção correta.");
-                return;
-            }
-
             const questionObj = { question, options, correctOption };
+            const { schedule_date, schedule_time } = splitDateTimeLocal(dataHora);
 
-            const [schedule_date, schedule_time] = dataHora ? dataHora.split("T") : ["", ""];
-
-            const payload = {
+            const res = await postQuiz({
                 chatId: selectedGroup,
                 questions: quizData.length > 0 ? quizData : [questionObj],
                 schedule_date,
                 schedule_time,
-            };
+            });
 
-            await postQuiz(payload.questions, payload.chatId);
+            if (!res.success) {
+                throw res.error ?? new Error("Erro ao criar o quizz.");
+            }
 
-            toast.success("Quizz criado com sucesso!");
+            toast.success(
+                schedule_date && schedule_time
+                    ? "Quizz agendado com sucesso!"
+                    : "Quizz enviado com sucesso!"
+            );
             resetForm();
         } catch (error: any) {
-            toast.error(error.response?.data?.message || "Erro ao criar o quizz.");
+            toast.error(
+                error?.response?.data?.message ||
+                (typeof error === "string" ? error : "Erro ao criar o quizz.")
+            );
         } finally {
             setLoading(false);
         }
     };
 
-
     return (
         <>
             <Header title={"Knowledge Check Bot"} showMenu={true} />
             <Navbar />
-            <h1 className={styles.SubTitle}> Criar Quizz</h1>
+            <h1 className={styles.SubTitle}>Criar Quizz</h1>
             <div className="container py-5 d-flex justify-content-center align-items-center flex-column">
-                <FileUploader handleFileUpload={(file: any) => {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        try {
-                            const content = event.target?.result as string;
-                            const parsed = JSON.parse(content);
+                <FileUploader
+                    handleFileUpload={(file: any) => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            try {
+                                const content = event.target?.result as string;
+                                const parsed = JSON.parse(content);
 
-                            if (!parsed.questions || !Array.isArray(parsed.questions)) {
-                                toast.error("Arquivo JSON inválido adicione suas perguntas.");
-                                return;
+                                if (!parsed.questions || !Array.isArray(parsed.questions)) {
+                                    toast.error("Arquivo JSON inválido adicione suas perguntas.");
+                                    return;
+                                }
+
+                                setQuizData(parsed.questions);
+
+                                const first = parsed.questions[0];
+                                if (first) {
+                                    setQuestion(first.question);
+                                    setOptions(first.options);
+                                    setCorrectOption(first.correctOption);
+                                }
+
+                                toast.success("Perguntas carregadas! Revise e clique em Enviar.");
+                            } catch {
+                                toast.error("Erro ao ler o arquivo JSON.");
                             }
-
-                            setQuizData(parsed.questions);
-
-                            const first = parsed.questions[0];
-                            if (first) {
-                                setQuestion(first.question);
-                                setOptions(first.options);
-                                setCorrectOption(first.correctOption);
-                            }
-
-                            toast.success("Perguntas carregadas! Revise e clique em Enviar.");
-                        } catch {
-                            toast.error("Erro ao ler o arquivo JSON.");
-                        }
-                    };
-                    reader.readAsText(file);
-
-                }} />
+                        };
+                        reader.readAsText(file);
+                    }}
+                />
                 <form className="w-100" style={{ maxWidth: 500 }}>
                     <div className="mb-3 mt-1">
                         <label htmlFor="groupSelect" className={styles.label}>
                             Qual é o seu grupo?
                         </label>
                         <select
-                        id="group"
-                        className={styles.inputSelect}
-                        value={selectedGroup}
-                        onChange={(e) => setSelectedGroup(e.target.value)}
-                        required
+                            id="group"
+                            className={styles.inputSelect}
+                            value={selectedGroup}
+                            onChange={(e) => setSelectedGroup(e.target.value)}
+                            required
                         >
-                        <option value="">Selecione</option>
-                        {(data ?? []).map((group: any) => (
-                            <option key={group.id} value={String(group.chat_id)}>
-                            {group.title ?? `Grupo ${group.chat_id}`}
-                            </option>
-                        ))}
+                            <option value="">Selecione</option>
+                            {(data ?? []).map((group: any) => (
+                                <option key={group.id} value={String(group.chat_id)}>
+                                    {group.title ?? `Grupo ${group.chat_id}`}
+                                </option>
+                            ))}
                         </select>
                     </div>
 
@@ -182,7 +204,11 @@ export default function CreateQuizz() {
                     </div>
 
                     <div className="d-flex justify-content-around mt-3 gap-3">
-                        <button className={styles.opcao} type="button" onClick={addOption}>
+                        <button
+                            className={styles.opcao}
+                            type="button"
+                            onClick={addOption}
+                        >
                             <Image src={iconPlus} alt="plus" />
                             Opção
                         </button>
@@ -194,7 +220,6 @@ export default function CreateQuizz() {
                         >
                             {loading ? "Enviando..." : "Enviar"}
                         </button>
-
                     </div>
                     <AgendamentoModal
                         show={showModal}
