@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Header from "../components/Header";
 import { LoginFormData, loginSchema } from "../schemas/loginSchema";
 import { postLogin } from "../services/post-login";
@@ -127,8 +127,6 @@ export default function Login() {
             )}
           </button>
         </form>
-
-        <ToastContainer position="top-right" autoClose={3000} />
         <p className="mt-3">
           Ainda não tem conta?{" "}
           <Link href="/register" className={styles.registerButton}>

@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import iconPlus from "../assets/icon.png";
 import Header from "../components/Header";
@@ -167,11 +167,8 @@ export default function CreatePoll() {
                 "Enviar"
               )}
             </button>
-
           </div>
         </form >
-
-        <ToastContainer position="top-right" autoClose={3000} />
       </div >
     </>
   );
