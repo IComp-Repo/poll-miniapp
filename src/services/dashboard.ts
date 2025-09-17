@@ -50,7 +50,6 @@ function getToken(): string | null {
 function getAuthHeader() {
     const token = getToken();
     if (!token) {
-        console.warn('[dashboard] token não encontrado em session/localStorage');
         return null;
     }
     return { Authorization: `Bearer ${token}` };
