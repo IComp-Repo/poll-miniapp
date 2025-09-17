@@ -78,8 +78,6 @@ export default function CreatePoll() {
 
     try {
       const response = await createPolls(question, options, selectedGroup);
-      console.log(question, options, selectedGroup);
-      console.log(response);
       toast.success(response.data.message || "Quizz enviado com sucesso!");
       resetForm();
     } catch (error: any) {

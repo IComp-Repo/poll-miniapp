@@ -3,3 +3,7 @@ export interface Quiz {
     options: string[];
     correctOption: number;
 }
+
+export interface QuizGenerationInput {
+    prompt: string;
+}

@@ -22,8 +22,12 @@ export async function postQuiz({
   schedule_date = null,
   schedule_time = null,
 }: PostQuizParams) {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error("Usuário não autenticado.");
+  }
   const headers = {
-    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+    Authorization: `Bearer ${token}`,
   };
 
   try {
@@ -39,10 +43,8 @@ export async function postQuiz({
     return { success: true, data: response };
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error("API Error:", error.response?.data || error.message);
       return { success: false, error: error.response?.data || error.message };
     }
-    console.error("Unexpected error:", error);
     return { success: false, error: "Unexpected error occurred" };
   }
 }

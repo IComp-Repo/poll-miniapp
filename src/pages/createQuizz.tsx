@@ -3,6 +3,7 @@ import { postQuiz } from "@/services/post-quizz";
 import { useQuery } from '@tanstack/react-query';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -153,6 +154,11 @@ export default function CreateQuizz() {
                         reader.readAsText(file);
                     }}
                 />
+                <p className="text-center">
+                    <Link href="/generateQuizz" className={styles.linkQuizz}>Gere seu Quizz com perguntas automatizadas aqui</Link>
+                </p>
+                {isLoading && <p>Carregando grupos...</p>}
+                {error && <p className="text-danger">Erro ao carregar grupos.</p>}
                 <form className="w-100" style={{ maxWidth: 500 }}>
                     <div className="mb-3 mt-1">
                         <label htmlFor="groupSelect" className={styles.label}>

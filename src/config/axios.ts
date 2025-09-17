@@ -15,7 +15,6 @@ api.interceptors.request.use(
   }
   ,
   (error) => {
-    console.error('Request error:', error);
     return Promise.reject(error);
   }
 );
@@ -27,13 +26,10 @@ api.interceptors.response.use(
   ,
   (error) => {
     if (error.response) {
-      console.error('Response error:', error.response.data);
       return Promise.reject(error.response.data);
     } else if (error.request) {
-      console.error('No response received:', error.request);
       return Promise.reject(new Error('No response received from server'));
     } else {
-      console.error('Request setup error:', error.message);
       return Promise.reject(new Error(error.message));
     }
   }

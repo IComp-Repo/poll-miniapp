@@ -11,7 +11,10 @@ export const API_ROUTES = {
     SHOW: '/api/user-groups/'
   },
   LINK: {
-    TELEGRAM: 'api/telegram/link/'
+    TELEGRAM: '/api/telegram/link/'
+  },
+  QUIZ: {
+    GENERATE: '/api/generate-quiz/'
   }
   
 };
