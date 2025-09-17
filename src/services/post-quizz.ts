@@ -22,8 +22,12 @@ export async function postQuiz({
   schedule_date = null,
   schedule_time = null,
 }: PostQuizParams) {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error("Usuário não autenticado.");
+  }
   const headers = {
-    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+    Authorization: `Bearer ${token}`,
   };
 
   try {

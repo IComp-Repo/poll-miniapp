@@ -522,3 +522,49 @@
   font-size: "14px";
   color: "#003366";
 }
+
+.inputGenerateQuizz {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  padding-left: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  color: #343A40;
+  border-radius: 20px;
+  background-color: #EEECEC;
+}
+
+.textarea {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  padding-left: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-size: 13px;
+  color: #343A40;
+  border-radius: 20px;
+  background-color: #EEECEC;
+  white-space: pre-wrap;
+  font-family: monospace;
+
+}
+
+.linkQuizz {
+  color: #01325B;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  word-break: break-all;
+}
+
+.linkQuizz:hover {
+  text-decoration: underline;
+}
+
+.iconDownload {
+  width: 20px;
+  height: 20px;
+  fill: white;
+  margin-right: 8px;
+}

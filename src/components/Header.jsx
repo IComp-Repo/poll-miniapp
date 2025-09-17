@@ -19,7 +19,7 @@ export default function Header({ title, showMenu = true }) {
             style={{ cursor: 'pointer' }}
             width={70}
             height={70}
-            onClick={() => router.push('/menu')}
+            onClick={() => router.push('/')}
           />
           <h1 className={styles.title} onClick={() => router.push('/menu')}>
             {title}
