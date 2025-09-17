@@ -24,16 +24,14 @@ export default function GenerateQuizz() {
         try {
             const response = await postGenerateQuiz({ prompt });
 
-            const quiz = response.quiz || response;
-            setQuizOriginal(quiz);
+            setQuizOriginal(response);
 
             const texto = [
-                `Título: ${quiz.title}`,
-                ...quiz.questions.map((q: any, i: number) => {
+                ...response.questions.map((q: any, i: number) => {
                     return `
-${i + 1}. ${q.question_text}
+${i + 1}. ${q.question}
 ${q.options.map((opt: string, idx: number) => `   ${idx + 1}) ${opt}`).join("\n")}
-Resposta correta: ${q.options[q.correct_option_index]}
+Resposta correta: ${q.options[q.correctOption]}
 ------------------------------------------------------------`;
                 }),
             ].join("\n");
@@ -105,7 +103,7 @@ Resposta correta: ${q.options[q.correct_option_index]}
                     <div className="d-flex justify-content-center mt-3">
                         <button
                             className={styles.submitPoll}
-                            onClick={() => downloadJson({ quiz: quizOriginal }, 'perguntas_quiz.json')}
+                            onClick={() => downloadJson({ questions: quizOriginal.questions }, 'perguntas_quiz.json')}
                         ><IconDownload className={styles.iconDownload} />
                             Baixar Quizz em JSON
                         </button>
