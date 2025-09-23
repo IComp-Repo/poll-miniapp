@@ -65,13 +65,13 @@ Resposta correta: ${q.options[q.correctOption]}
                 >
                     <div className="mb-4 mt-3">
                         <label htmlFor="questionInput" className={styles.label}>
-                            Qual é a sua pergunta?
+                            Digite sobre o que é a pergunta:
                         </label>
                         <input
                             id="questionInput"
                             className={styles.inputGenerateQuizz}
                             type="text"
-                            placeholder="Digite sobre o que você quer perguntar"
+                            placeholder="Digite aqui"
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
                         />
