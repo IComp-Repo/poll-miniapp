@@ -1,17 +1,21 @@
 export const dadosIntegrantes = [
   {
-    name: "Martinho Prata dos Santos - Desenvolvedor Full Stack",
+    name: "Martinho Prata - Desenvolvedor Full Stack",
     linkedin: "https://www.linkedin.com/in/martinho-prata/",
   },
   {
-    name: "Samuel Monteiro Gomes - Desenvolvedor Frontend",
+    name: "Samuel Monteiro - Desenvolvedor Frontend",
     linkedin: "https://www.linkedin.com/in/samuel-monteiro-gomes/",
   },
+  {
+    name:'Hugo Moraes - Desenvolvedor Backend',
+    linkedin: "https://www.linkedin.com/in/hugomoraesbrasil/",
+  }
 ]
 export const dadosOrientador = [
   {
-    name: "Prof. Dr. Cezar Melo - Orientador",
-    linkedin: "https://www.linkedin.com/in/cezar-melo/",
+    name: "Prof. Dr. Cesar Melo - Orientador",
+    linkedin: "https://www.linkedin.com/in/cesar-augusto-melo-0226884/",
   },
 ]
 export const dadosTecnologias = [

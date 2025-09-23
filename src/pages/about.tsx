@@ -17,16 +17,16 @@ export default function About() {
                             Sobre o Projeto
                         </h1>
                         <p className={`${styles.cardText} text-justify`}>
-                            O Knowledge Check Bot é um aplicativo desenvolvido para facilitar a criação e o envio de enquetes e quizzes diretamente para o Telegram...
+                            O Knowledge Check Bot é um aplicativo desenvolvido para facilitar a criação e o envio de enquetes e quizzes diretamente para o Telegram.
                         </p>
                         <p className={`${styles.cardText} text-justify`}>
-                            Este projeto foi idealizado para atender às necessidades de educadores, empresas e qualquer pessoa que deseje engajar seu público através de perguntas interativas...
+                            Este projeto foi idealizado para atender às necessidades de educadores, empresas e qualquer pessoa que deseje engajar seu público através de perguntas interativas.
                         </p>
                         <p className={`${styles.cardText} text-justify`}>
-                            O Knowledge Check Bot é construído utilizando tecnologias modernas como Next.js para o frontend e Python com Django para o backend...
+                            O Knowledge Check Bot é construído utilizando tecnologias modernas como React com Next.js para o frontend e Python com Django para o backend.
                         </p>
                         <p className={`${styles.cardText} text-justify`}>
-                            Estamos comprometidos em fornecer uma ferramenta confiável e eficiente para nossos usuários...
+                            Estamos comprometidos em fornecer uma ferramenta confiável e eficiente para nossos usuários.
                         </p>
                     </div>
                 </div>

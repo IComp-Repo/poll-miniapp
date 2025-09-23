@@ -2,6 +2,7 @@ import FileUploader from "@/components/FileUpload";
 import { postQuiz } from "@/services/post-quizz";
 import { useQuery } from '@tanstack/react-query';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Link as LinkIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -155,9 +156,11 @@ export default function CreateQuizz() {
                     }}
                 />
                 <p className="text-center">
-                    <Link href="/generateQuizz" className={styles.linkQuizz}>Gere seu Quizz com perguntas automatizadas aqui</Link>
+                    <Link href="/generateQuizz" className={styles.linkQuizz}>
+                        <LinkIcon className="inline-block w-4 h-4 mr-1" />
+                         Gere seu Quizz com perguntas aqui
+                    </Link>
                 </p>
-                {isLoading && <p>Carregando grupos...</p>}
                 {error && <p className="text-danger">Erro ao carregar grupos.</p>}
                 <form className="w-100" style={{ maxWidth: 500 }}>
                     <div className="mb-3 mt-1">
@@ -182,13 +185,13 @@ export default function CreateQuizz() {
 
                     <div className="mb-4 mt-3">
                         <label htmlFor="questionInput" className={styles.label}>
-                            Qual é a sua pergunta?
+                            Digite sobre o que é a pergunta:
                         </label>
                         <input
                             id="questionInput"
                             className={styles.input}
                             type="text"
-                            placeholder="Digite sua pergunta"
+                            placeholder="Digite aqui"
                             value={question}
                             onChange={(e) => setQuestion(e.target.value)}
                             required={quizData.length === 0}
