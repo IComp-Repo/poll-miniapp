@@ -1,20 +1,26 @@
 export const API_ROUTES = {
   AUTH: {
-    LOGIN: '/api/auth/login/',
-    REGISTER: '/api/auth/register/',
+    LOGIN: '/api/v1/auth/login/',
+    REGISTER: '/api/v1/auth/register/',
   },
   POLLS: {
-    CREATE: '/api/send-poll/',
-    QUIZZ: '/api/send-quiz/'
+    CREATE: '/api/v1/quiz/send-poll/',
+    QUIZZ: '/api/v1/quiz/send-quiz/'
   },
   GROUPS: {
-    SHOW: '/api/user-groups/'
+    SHOW: '/api/v1/auth/user-groups/'
   },
   LINK: {
-    TELEGRAM: '/api/telegram/link/'
+    TELEGRAM: '/api/v1/telegram/link/'
   },
   QUIZ: {
-    GENERATE: '/api/generate-quiz/'
+    GENERATE: '/api/v1/ai/generate-quiz/'
+  },
+  DASHBOARD: {
+    SUMMARY: '/api/v1/quiz/dashboard/quiz/summary/',
+    LAST_ACTIVITIES: '/api/v1/quiz/dashboard/quiz/last-activities/',
+    RESPONSES_PER_DAY: '/api/v1/quiz/dashboard/quiz/responses-per-day/',
+    QUESTION_STATS: (questionId: number) => `/api/v1/quiz/dashboard/quiz/questions/${questionId}/stats/`,
   }
   
 };

@@ -1,4 +1,5 @@
 import api from '@/config/axios';
+import { API_ROUTES } from '@/config/routes';
 import { toast } from 'react-toastify';
 
 export type DashboardSummary = {
@@ -76,7 +77,7 @@ export async function getDashboardSummary() {
         const headers = getAuthHeader();
         if (!headers) return null;
 
-        const { data } = await api.get('/api/dashboard/quiz/summary/', { headers });
+        const { data } = await api.get(API_ROUTES.DASHBOARD.SUMMARY, { headers });
         return unwrap<DashboardSummary>(data) ?? null;
     } catch (error) {
         return handleApiError(error, 'Erro ao buscar resumo do dashboard!', null);
@@ -88,7 +89,7 @@ export async function getLastActivities() {
         const headers = getAuthHeader();
         if (!headers) return [];
 
-        const { data } = await api.get('/api/dashboard/quiz/last-activities', { headers });
+        const { data } = await api.get(API_ROUTES.DASHBOARD.LAST_ACTIVITIES, { headers });
 
         const payload = unwrap<ActivityItem[] | { data: ActivityItem[] }>(data);
         const list = Array.isArray(payload) ? payload : (payload as any)?.data;
@@ -104,7 +105,7 @@ export async function getResponsesPerDay(days = 7) {
         if (!headers) return [];
 
         const { data } = await api.get(
-            `/api/dashboard/quiz/responses-per-day/?days=${days}`,
+            `${API_ROUTES.DASHBOARD.RESPONSES_PER_DAY}?days=${days}`,
             { headers }
         );
 
@@ -121,10 +122,7 @@ export async function getQuestionStats(questionId: number) {
         const headers = getAuthHeader();
         if (!headers) return null;
 
-        const { data } = await api.get(
-            `/api/dashboard/quiz/questions/${questionId}/stats/`,
-            { headers }
-        );
+        const { data } = await api.get(API_ROUTES.DASHBOARD.QUESTION_STATS(questionId), { headers });
 
         return unwrap<QuestionStats>(data) ?? null;
     } catch (error) {
